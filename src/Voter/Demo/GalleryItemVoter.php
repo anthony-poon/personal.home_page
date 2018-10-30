@@ -26,10 +26,24 @@ class GalleryItemVoter extends Voter {
     }
 
     protected function supports($attribute, $subject) {
-        return ($subject instanceof GalleryItem || $subject instanceof Asset) && in_array($attribute, [
-            self::VIEW,
-            self::EDIT,
-        ]);
+        if ($subject && $attribute) {
+            switch (get_class($subject)) {
+                case GalleryItem::class:
+                    return in_array($attribute, [
+                        self::VIEW,
+                        self::EDIT,
+                    ]);
+                case Asset::class:
+                    /* @var $subject \App\Entity\Base\Asset */
+                    return $subject->getNamespace() === "gallery_image" && in_array($attribute, [
+                            self::VIEW,
+                            self::EDIT,
+                        ]);
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token) {
@@ -48,7 +62,7 @@ class GalleryItemVoter extends Voter {
             case Asset::class:
                 switch ($attribute) {
                     case self::VIEW:
-                        return $user instanceof User;
+                        return true;
                     case self::EDIT:
                         $repo = $this->em->getRepository(GalleryItem::class);
                         $galleryItems = $repo->findBy([
