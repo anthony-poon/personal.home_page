@@ -6,6 +6,21 @@ html {
 
 #top-navbar {
     border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
+    a {
+        text-decoration: none;
+        color: $text-muted;
+    }
+    #navbar-header {
+        font-size: 1.25rem;
+    }
+    .navbar-scroll {
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap;
+    }
+    .submenu-border {
+        border-width: 5px;
+    }
 }
 
 #side-menu {
@@ -29,6 +44,42 @@ html {
         }
     }
 }
+
+#side-menu.collapsing {
+    transition: none;
+    display: none;
+}
+
+#inline-side-menu {
+    border-right: rgba(0, 0, 0, 0.1) 1px solid;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    @extend .bg-white;
+    .menu-item {
+        transition: color 0.4s;
+        display: flex;
+        font-size: $h6-font-size;
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            flex-grow: 0;
+            flex-shrink: 0;
+            .material-icons {
+            }
+        }
+        .text-wrapper {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+#inline-side-menu.collapsing {
+    transition: none;
+    display: none;
+}
+
 
 .submenu {
     position: fixed;

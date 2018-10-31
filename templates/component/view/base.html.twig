@@ -15,20 +15,21 @@
         {% block css %}{% endblock %}
     </head>
     <body>
-        {% if layout == "full_width" %}
-            {% include("/component/view/top_navbar_full_width.html.twig") %}
-        {% else %}
-            {% include("/component/view/top_navbar_compact.html.twig") %}
-        {% endif %}
-        {% if menu_style == "collapse" %}
-            {% include("/component/view/left_menu_collapse.html.twig") %}
-        {% endif %}
-        <div class="{{ layout == "full_width" ? "container-fluid" : "container" }}" id="main-wrapper">
+        {% include("/component/view/top_navbar.html.twig") %}
+        {% if template_helper.getSideMenuStyle == "collapse" %}
             <div class="row">
-                {% if menu_style != "collapse" %}
-                    {% include("/component/view/left_menu_expand.html.twig") %}
-                {% endif %}
-                <div class="col my-5 {{ layout == "full_width" ? "px-5" : "" }}" id="content-wrapper">
+                {% include("/component/view/side_menu_collapse.html.twig") %}
+            </div>
+        {% endif %}
+        <div class="{{ template_helper.getLayout == "full_width" ? "container-fluid" : "container" }}" id="main-wrapper">
+            {% if template_helper.getSideMenuStyle == "inline" %}
+                <div class="row">
+                    {% include("/component/view/side_menu_inline.html.twig") %}
+                </div>
+
+            {% endif %}
+            <div class="row">
+                <div class="col my-5 {{ template_helper.getLayout == "full_width" ? "px-5" : "" }}" id="content-wrapper">
                     <div class="row">
                         <div class="col">
                             {% block body %}{% endblock %}

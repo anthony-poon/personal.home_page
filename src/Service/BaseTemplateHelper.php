@@ -8,6 +8,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class BaseTemplateHelper {
     private $sideMenu = [];
+    private $sideMenuStyle;
+    private $navMenu = [];
+    private $layout;
     private $title = "Web Application";
     private $jsParam = [];
     /* @var User $user */
@@ -15,7 +18,9 @@ class BaseTemplateHelper {
 	private $css = [];
 	private $js = [];
 	private $role = [];
-    public function __construct(RouterInterface $router, TokenStorageInterface $tokenStorage) {
+    public function __construct(RouterInterface $router, TokenStorageInterface $tokenStorage, ParameterBagInterface $params) {
+        $this->sideMenuStyle = $params->get("side_menu_style");
+        $this->layout = $params->get("layout");
 		$token = $tokenStorage->getToken();
 		$this->role = [];
 		if ($token) {
@@ -24,24 +29,47 @@ class BaseTemplateHelper {
 				$this->role = $this->user->getRoles();
 			}
 		}
-    	$this->sideMenu = [
+    	$this->navMenu = [
+            [
+                "text" => "Gallery",
+                "url" => $router->generate("gallery_index")
+            ],
         	[
         		"text" => "Home",
 				"icon" => "home",
-				"url" => $router->generate	("home"),
+				"url" => $router->generate("home"),
 			], [
-				"text" => "User Management",
-				"url" => $router->generate("user_list"),
+				"text" => "Administration",
+				"url" => "#",
 				"isVisible" => in_array("ROLE_ADMIN", $this->role),
-			], [
-				"text" => "Group Management",
-				"url" => $router->generate("user_group_list"),
-				"isVisible" => in_array("ROLE_ADMIN", $this->role),
-			], [
-			    "text" => "Gallery",
-                "url" => $router->generate("gallery_index")
-            ]
+                "dropdown" => [
+                    [
+                        "text" => "User Management",
+                        "url" => $router->generate("user_list"),
+                    ],[
+                        "text" => "Group Management",
+                        "url" => $router->generate("user_group_list"),
+                        "isVisible" => in_array("ROLE_ADMIN", $this->role),
+                    ]
+                ]
+			],
 		];
+    }
+
+    /**
+     * @return array
+     */
+    public function getNavMenu(): array {
+        return $this->navMenu;
+    }
+
+    public function addNavMenu(array $item) {
+        $this->navMenu[] = $item;
+        return $this;
+    }
+
+    public function setNavMenu(array $menu) {
+        $this->navMenu = $menu;
     }
 
     /**
@@ -51,9 +79,28 @@ class BaseTemplateHelper {
         return $this->sideMenu;
     }
 
-    public function addSideMenuItem(array $item) {
+    public function addSideMenu(array $item) {
         $this->sideMenu[] = $item;
         return $this;
+    }
+
+    public function setSideMenu(array $menu) {
+        $this->sideMenu = $menu;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSideMenuStyle(): string
+    {
+        return $this->sideMenuStyle;
+    }
+
+    /**
+     * @param mixed $sideMenuStyle
+     */
+    public function setSideMenuStyle($sideMenuStyle) {
+        $this->sideMenuStyle = $sideMenuStyle;
     }
 
     /**
@@ -111,6 +158,21 @@ class BaseTemplateHelper {
 	public function getJs(): array {
 		return $this->js;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @param mixed $layout
+     */
+    public function setLayout($layout) {
+        $this->layout = $layout;
+    }
 
 
 }

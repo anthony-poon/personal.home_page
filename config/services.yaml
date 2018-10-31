@@ -4,9 +4,8 @@ parameters:
     locale: 'en'
     # layout: 'full_width' / 'compact'
     layout: 'compact'
-    # menu_style: 'collapse' / 'expand'
-    menu_style: 'collapse'
-    app_data_dir: "%kernel.root_dir%\\..\\var\\app_data"
+    # menu_style: 'inline' / 'collapse'
+    side_menu_style: 'collapse'
 
 services:
     # default configuration for services in *this* file

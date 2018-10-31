@@ -1,0 +1,33 @@
+<div class="col-md-2 col-xs-12 pt-5 collapse" id="inline-side-menu">
+    <div class="row">
+        <div class="col">
+            {% for item in template_helper.getSideMenu %}
+                {% if item.isVisible is not defined or (item.isVisible is defined and item.isVisible) %}
+                    <div class="row">
+                        <div class="col">
+                            {% if item.url is defined %}
+                                <a href="{{ item.url }}" class="menu-item btn-like py-2">
+                                    {% if item.icon is defined %}
+                                        <i class="material-icons mr-3">{{ item.icon }}</i>
+                                    {% else %}
+                                        <i class="material-icons mr-3 invisible">home</i>
+                                    {% endif %}
+                                    <span class="text-wrapper"><small>{{ item.text }}</small></span>
+                                </a>
+                            {% else %}
+                                <div class="menu-item py-2">
+                                    {% if item.icon is defined %}
+                                        <i class="material-icons mr-3">{{ item.icon }}</i>
+                                    {% else %}
+                                        <i class="material-icons mr-3 invisible">home</i>
+                                    {% endif %}
+                                    <span class="text-wrapper"><small>{{ item.text }}</small></span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>

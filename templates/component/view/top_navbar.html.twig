@@ -1,0 +1,74 @@
+<nav id="top-navbar" class="sticky-top bg-white">
+    <div class="container">
+        <div class="row">
+            {% if template_helper.getSideMenu %}
+                <div class="pl-0 col-auto align-items-center d-flex">
+                    <button class="btn btn-sm p-2 bg-white" type="button" data-toggle="collapse" data-target="#side-menu, #inline-side-menu" aria-controls="navbar-body" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="material-icons align-middle text-primary">
+                            menu
+                        </i>
+                    </button>
+                </div>
+            {% endif %}
+            <div class="col-md-auto col d-flex align-items-center justify-content-md-start justify-content-center {{ template_helper.getSideMenu ? "" : " ml-md-0 ml-5" }}" id="navbar-header">
+                <a class="py-2" href="#">{{ template_helper.title }}</a>
+            </div>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a class="col-auto order-md-2 d-flex justify-content-center align-items-center" href="#" role="button" data-toggle="collapse" data-target="#top-navbar .collapse.show, #account-menu" aria-haspopup="true" aria-expanded="false">
+                    <i class="material-icons mr-md-3">account_circle</i>
+                    <span class="d-md-inline d-none">{{ app.user.fullName }}</span>
+                </a>
+            {% else %}
+                <a href="{{ path("security_login") }}" class="col-auto order-md-2 d-flex justify-content-center align-items-center">
+                    <i class="material-icons mr-md-3">account_circle</i>
+                    <span class="d-md-inline d-none">Welcome, Guest!</span>
+                </a>
+            {% endif %}
+            {% if template_helper.getNavMenu %}
+                <div class="col-xs-12 col-md order-md-1">
+                    <div class="h-100 row align-items-center navbar-scroll">
+                        {% for index, item in template_helper.getNavMenu %}
+                            <div class="col-auto py-2 font-weight-light">
+                                <a class="text-primary" href="{{ item.url is defined ? item.url : "#" }}"
+                                    {% if item.dropdown is defined %}
+                                        data-toggle="collapse" data-target="#top-navbar .collapse.show, #submenu-{{ index }}"
+                                    {% endif %}
+                                >
+                                    {{ item.text }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            {% for index, item in template_helper.getNavMenu %}
+                {% if item.dropdown is defined %}
+                    <div class="col-auto collapse" id="submenu-{{ index }}">
+                        <div class="row">
+                            {% for subitem in item.dropdown %}
+                                <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ subitem.url is defined ? subitem.url : "#" }}">
+                                    {{ subitem.text }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div class="collapse col-auto" id="account-menu">
+                <div class="row">
+                    <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ path("profile_edit") }}">
+                        Profile
+                    </a>
+                    <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ path("logout") }}">
+                        Logout
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</nav>
