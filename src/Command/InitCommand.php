@@ -49,7 +49,9 @@ class InitCommand extends Command {
 		}
 		$adminGroup->setName("Administrator Group");
 		$adminGroup->setSiteToken("ROLE_ADMIN");
-
+        if (!$adminGroup->getChildren()->contains($root)) {
+            $adminGroup->getChildren()->add($root);
+        }
         $userGroup = $grpRepo->findOneBy(["siteToken" => "ROLE_USER"]);
         if (empty($userGroup)) {
             $output->writeln("Creating User Group");
