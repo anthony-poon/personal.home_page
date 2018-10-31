@@ -28,15 +28,17 @@
                 <div class="col-xs-12 col-md order-md-1">
                     <div class="h-100 row align-items-center navbar-scroll">
                         {% for index, item in template_helper.getNavMenu %}
-                            <div class="col-auto py-2 font-weight-light">
-                                <a class="text-primary" href="{{ item.url is defined ? item.url : "#" }}"
-                                    {% if item.dropdown is defined %}
-                                        data-toggle="collapse" data-target="#top-navbar .collapse.show, #submenu-{{ index }}"
-                                    {% endif %}
-                                >
-                                    {{ item.text }}
-                                </a>
-                            </div>
+                            {% if item.isVisible is not defined or item.isVisible %}
+                                <div class="col-auto py-2 font-weight-light">
+                                    <a class="text-primary" href="{{ item.url is defined ? item.url : "#" }}"
+                                        {% if item.dropdown is defined %}
+                                            data-toggle="collapse" data-target="#top-navbar .collapse.show, #submenu-{{ index }}"
+                                        {% endif %}
+                                    >
+                                        {{ item.text }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -48,9 +50,11 @@
                     <div class="col-auto collapse" id="submenu-{{ index }}">
                         <div class="row">
                             {% for subitem in item.dropdown %}
-                                <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ subitem.url is defined ? subitem.url : "#" }}">
-                                    {{ subitem.text }}
-                                </a>
+                                {% if subitem.isVisible is not defined or subitem.isVisible %}
+                                    <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ subitem.url is defined ? subitem.url : "#" }}">
+                                        {{ subitem.text }}
+                                    </a>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
