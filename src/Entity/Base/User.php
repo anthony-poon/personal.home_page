@@ -70,7 +70,7 @@ class User extends DirectoryObject implements UserInterface, \Serializable {
 	/**
 	 * Reference to the security group which this object is an immediate member
 	 * @var Collection
-	 * @ORM\ManyToMany(targetEntity="SecurityGroup", mappedBy="children", cascade={"persist"})
+	 * @ORM\ManyToMany(targetEntity="SecurityGroup", mappedBy="children")
 	 */
 	private $securityGroups;
     public function serialize() {

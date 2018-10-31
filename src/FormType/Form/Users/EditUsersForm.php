@@ -32,12 +32,6 @@ class EditUsersForm extends AbstractType {
                 ),
             ))
             ->add('email', EmailType::class)
-			->add('securityGroups', EntityType::class, [
-				"expanded" => true,
-				"multiple" => true,
-				"class" => SecurityGroup::class,
-				"choice_label" => "name"
-			])
             ->add("submit", SubmitType::class);
     }
 
