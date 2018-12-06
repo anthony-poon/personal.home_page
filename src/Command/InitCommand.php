@@ -2,11 +2,9 @@
 
 namespace App\Command;
 
-use App\Entity\Base\AccessToken;
-use App\Entity\Base\DirectoryGroup;
-use App\Entity\Base\DirectoryObject;
-use App\Entity\Base\SecurityGroup;
-use App\Entity\Base\User;
+use App\Entity\Base\Directory\AccessToken;
+use App\Entity\Base\Directory\DirectoryGroup;
+use App\Entity\Base\Directory\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
