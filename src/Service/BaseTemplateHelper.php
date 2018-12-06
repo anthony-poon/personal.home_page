@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Base\User;
+use App\Entity\Base\Directory\User;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -13,7 +13,6 @@ class BaseTemplateHelper {
     private $layout;
     private $title = "Web Application";
     private $jsParam = [];
-    /* @var User $user */
 	private $user = null;
 	private $css = [];
 	private $js = [];
@@ -41,20 +40,30 @@ class BaseTemplateHelper {
 				"url" => $router->generate("home"),
 			], [
 				"text" => "Administration",
-				"url" => "#",
+                "url" => $router->generate("user_list"),
 				"isVisible" => in_array("ROLE_ADMIN", $this->role),
-                "dropdown" => [
-                    [
-                        "text" => "User Management",
-                        "url" => $router->generate("user_list"),
-                    ],[
-                        "text" => "Group Management",
-                        "url" => $router->generate("user_group_list"),
-                        "isVisible" => in_array("ROLE_ADMIN", $this->role) ,
-                    ]
-                ]
-			],
+			], [
+                "text" => "Group Management",
+                "url" => $router->generate("user_group_list"),
+                "isVisible" => in_array("ROLE_ADMIN", $this->role) ,
+            ]
 		];
+
+        $this->sideMenu = [
+            [
+                "text" => "Home",
+                "icon" => "home",
+                "url" => $router->generate("home"),
+            ], [
+                "text" => "User",
+                "url" => $router->generate("user_list"),
+                "isVisible" => in_array("ROLE_ADMIN", $this->role),
+            ], [
+                "text" => "User Group",
+                "url" => $router->generate("user_group_list"),
+                "isVisible" => in_array("ROLE_ADMIN", $this->role) ,
+            ]
+        ];
     }
 
     /**

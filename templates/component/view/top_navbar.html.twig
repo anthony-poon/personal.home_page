@@ -51,7 +51,7 @@
                         <div class="row">
                             {% for subitem in item.dropdown %}
                                 {% if subitem.isVisible is not defined or subitem.isVisible %}
-                                    <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ subitem.url is defined ? subitem.url : "#" }}">
+                                    <a class="col-12 text-primary py-1 my-1 font-weight-light border-left border-primary" href="{{ subitem.url is defined ? subitem.url : "#" }}">
                                         {{ subitem.text }}
                                     </a>
                                 {% endif %}
@@ -61,16 +61,16 @@
                 {% endif %}
             {% endfor %}
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <div class="collapse col-auto" id="account-menu">
-                <div class="row">
-                    <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ path("profile_edit") }}">
-                        Profile
-                    </a>
-                    <a class="col-12 text-primary pb-2 font-weight-light border-left border-primary" href="{{ path("logout") }}">
-                        Logout
-                    </a>
+                <div class="collapse ml-auto col-auto" id="account-menu">
+                    <div class="row">
+                        <a class="col-12 text-right py-1 my-1 text-primary pr-4 border-right border-primary font-weight-light" href="{{ path("profile_edit") }}">
+                            Profile
+                        </a>
+                        <a class="col-12 text-right py-1 my-1 text-primary pr-4 border-right border-primary font-weight-light" href="{{ path("logout") }}">
+                            Logout
+                        </a>
+                    </div>
                 </div>
-            </div>
             {% endif %}
         </div>
 

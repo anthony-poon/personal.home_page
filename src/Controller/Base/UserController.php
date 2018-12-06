@@ -2,9 +2,8 @@
 
 namespace App\Controller\Base;
 
-use App\Entity\Base\User;
-use App\FormType\Form\Users\CreateUsersForm;
-use App\FormType\Form\Users\EditUsersForm;
+use App\Entity\Base\Directory\User;
+use App\FormType\Base\UserForm;
 use App\Service\BaseTemplateHelper;
 use App\Service\EntityTableHelper;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,38 +19,30 @@ class UserController extends Controller {
     }
 
     /**
-     * @Route("/admin", name="user_index")
-     */
-    public function index() {
-        return $this->redirectToRoute("admin_list_user");
-    }
-
-    /**
      * @Route("/admin/users", name="user_list")
      */
     public function list(EntityTableHelper $helper, RouterInterface $router) {
         $repo = $this->getDoctrine()->getRepository(User::class);
         $users = $repo->findAll();
-        $helper->setAddPath("user_create");
-        $helper->setDelPath("user_delete");
-        $helper->setEditPath("user_edit");
+        $helper->addButton("Create", "user_create");
+        $helper->addButton("Edit", "user_edit");
+        $helper->addButton("Delete", "user_delete");
         $helper->setHeader([
-        	"#",
-			"Username",
-			"Full Name",
-			"Email"
-		]);
+            "#",
+            "Username",
+            "Full Name",
+            "Email"
+        ]);
         $helper->setTitle("Users");
         foreach ($users as $u) {
-        	/* @var User $u */
-			$helper->addRow($u->getId(), [
-				$u->getId(),
-				$u->getUsername(),
-				$u->getFullName(),
-				$u->getEmail()
-			]);
-		}
-
+            /* @var User $u */
+            $helper->addRow($u->getId(), [
+                $u->getId(),
+                $u->getUsername(),
+                $u->getFullName(),
+                $u->getEmail()
+            ]);
+        }
         return $this->render("render/entity_table.html.twig", $helper->compile());
     }
 
@@ -60,10 +51,10 @@ class UserController extends Controller {
      */
     public function create(Request $request, UserPasswordEncoderInterface $encoder) {
         $user = new User();
-        $form = $this->createForm(CreateUsersForm::class, $user);
+        $form = $this->createForm(UserForm::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /* @var \App\Entity\Base\User $user */
+            /* @var User $user */
             $user = $form->getData();
             $pw = $encoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($pw);
@@ -87,10 +78,13 @@ class UserController extends Controller {
         if (!$user) {
             throw new NotFoundHttpException("Unable to locate entity.");
         }
-        $form = $this->createForm(EditUsersForm::class, $user);
+        $form = $this->createForm(UserForm::class, $user, [
+            "allow_username" => false,
+            "validation_groups" => "Default"
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /* @var \App\Entity\Base\User $user */
+            /* @var User $user */
             $user = $form->getData();
             $pw = $user->getPlainPassword();
             if ($pw) {

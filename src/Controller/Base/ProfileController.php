@@ -2,10 +2,9 @@
 
 namespace App\Controller\Base;
 
-use App\Entity\Base\SecurityGroup;
-use App\Entity\Base\User;
-use App\FormType\Form\Users\EditSelfUsersForm;
-use App\FormType\Form\Users\SelfRegisterForm;
+use App\Entity\Base\Directory\DirectoryGroup;
+use App\Entity\Base\Directory\User;
+use App\FormType\Base\UserForm;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +16,12 @@ class ProfileController extends Controller {
      */
     public function edit(Request $request, UserPasswordEncoderInterface $encoder) {
         $self = $this->getUser();
-        $form = $this->createForm(EditSelfUsersForm::class, $self);
+        $form = $this->createForm(UserForm::class, $self, [
+            "allow_username" => false,
+            "validation_groups" => [
+                "Default"
+            ]
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $self = $form->getData();
@@ -41,22 +45,25 @@ class ProfileController extends Controller {
      */
     public function register(Request $request, UserPasswordEncoderInterface $encoder) {
         $user = new User();
-        $form = $this->createForm(SelfRegisterForm::class, $user);
+        $form = $this->createForm(UserForm::class, $user, [
+            "attr" => [
+                "novalidate" => true
+            ]
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /* @var \App\Entity\Base\User $user */
-            /* @var \App\Entity\Base\SecurityGroup $userGrp */
-            $repo = $this->getDoctrine()->getRepository(SecurityGroup::class);
-            $userGrp = $repo->findOneBy([
-                "siteToken" => "ROLE_USER"
+            /* @var User $user */
+            $repo = $this->getDoctrine()->getRepository(DirectoryGroup::class);
+            $userGroup = $repo->findOneBy([
+                "shortStr" => "user_group"
             ]);
             $user = $form->getData();
             $pw = $encoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($pw);
-            $userGrp->addChild($user);
+            $userGroup->addChild($user);
             $em = $this->getDoctrine()->getManager();
+            $em->persist($userGroup);
             $em->persist($user);
-            $em->persist($userGrp);
             $em->flush();
             return $this->redirectToRoute("security_login");
         }
