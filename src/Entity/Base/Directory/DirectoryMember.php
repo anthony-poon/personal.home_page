@@ -42,9 +42,7 @@ class DirectoryMember extends DirectoryObject {
         foreach ($this->getParents() as $parent) {
             /* @var DirectoryGroup $parent */
             foreach ($parent->getAccessTokens() as $token) {
-
                 if (!$rtn->contains($token)) {
-                    var_dump($token);
                     $rtn->add($token);
                 }
             }
