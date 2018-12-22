@@ -20,7 +20,7 @@ class AssetController extends AbstractController {
 
         $repo = $this->getDoctrine()->getRepository(Asset::class);
         $asset = $repo->find($id);
-        $this->denyAccessUnlessGranted("view", $asset);
+        $this->denyAccessUnlessGranted(ASSET::READ_ACCESS, $asset);
         if ($asset) {
             $file = base64_decode($asset->getBase64());
             $rsp = new Response();

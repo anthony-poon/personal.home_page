@@ -16,9 +16,15 @@ use Symfony\Component\Validator\Constraint as Assert;
  * @package App\Entity\Base
  * @ORM\Table(name="asset")
  * @ORM\Entity()
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="asset_type", type="string")
  */
 
 class Asset {
+    public const CREATE_ACCESS = "create";
+    public const READ_ACCESS = "read";
+    public const UPDATE_ACCESS = "update";
+    public const DELETE_ACCESS = "delete";
     /**
      * @var int
      * @ORM\Column(type="integer", length=11)

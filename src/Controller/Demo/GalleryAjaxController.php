@@ -9,6 +9,7 @@
 namespace App\Controller\Demo;
 
 use App\Entity\Base\Asset;
+use App\Entity\Demo\GalleryAsset;
 use App\Entity\Demo\GalleryItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,11 +37,10 @@ class GalleryAjaxController extends AbstractController{
             preg_match("/^(data:(.+);.+,)?(.+)$/", $json["base64_file"], $match);
             $mime = $match[2] ?? null;
             $data = $match[3];
-            $asset = new Asset();
-            $asset->setNamespace("gallery_image");
+            $asset = new GalleryAsset();
             $asset->setBase64($data);
             $asset->setMimeType($mime);
-            $galleryItem->getAssets()->add($asset);
+            $asset->setGalleryItem($galleryItem);
             $em = $this->getDoctrine()->getManager();
             $em->persist($galleryItem);
             $em->persist($asset);

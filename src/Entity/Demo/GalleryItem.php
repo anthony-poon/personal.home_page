@@ -8,11 +8,10 @@
 
 namespace App\Entity\Demo;
 
-use App\Entity\Base\Asset;
+use App\Entity\Base\Directory\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Base\User;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
@@ -22,6 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  */
 class GalleryItem {
+    public const CREATE_ACCESS = "create";
+    public const READ_ACCESS = "read";
+    public const UPDATE_ACCESS = "update";
+    public const DELETE_ACCESS = "delete";
     /**
      * @var int
      * @ORM\Column(type="integer", length=11)
@@ -32,7 +35,7 @@ class GalleryItem {
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\Base\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Base\Directory\User")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private $owner;
@@ -57,20 +60,15 @@ class GalleryItem {
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="App\Entity\Base\Asset")
-     * @ORM\JoinTable(name="gallery_asset_mapping",
-     *      joinColumns={@ORM\JoinColumn(name="gallery_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="asset_id", referencedColumnName="id")}
-     * )
+     * @ORM\OneToMany(targetEntity="GalleryAsset", mappedBy="galleryItem")
      */
     private $assets;
 
     /**
-     * @var File
-     * @Assert\NotBlank()
-     * @Assert\Image()
+     * @var bool
+     * @ORM\Column(type="boolean")
      */
-    private $upload;
+    private $isApproved = false;
 
     public function __construct() {
         $this->assets = new ArrayCollection();
@@ -86,7 +84,7 @@ class GalleryItem {
     /**
      * @return User
      */
-    public function getOwner(): User {
+    public function getOwner(): ?User {
         return $this->owner;
     }
 
@@ -94,7 +92,7 @@ class GalleryItem {
      * @param User $owner
      * @return GalleryItem
      */
-    public function setOwner(User $owner): GalleryItem {
+    public function setOwner(?User $owner): GalleryItem {
         $this->owner = $owner;
         return $this;
     }
@@ -139,27 +137,18 @@ class GalleryItem {
     }
 
     /**
-     * @param Collection $assets
-     * @return GalleryItem
+     * @return bool
      */
-    public function setAssets(Collection $assets): GalleryItem {
-        $this->assets = $assets;
-        return $this;
+    public function isApproved(): bool {
+        return $this->isApproved;
     }
 
     /**
-     * @return File
-     */
-    public function getUpload(): ?File {
-        return $this->upload;
-    }
-
-    /**
-     * @param File $upload
+     * @param bool $isApproved
      * @return GalleryItem
      */
-    public function setUpload(File $upload): GalleryItem {
-        $this->upload = $upload;
+    public function setIsApproved(bool $isApproved): GalleryItem {
+        $this->isApproved = $isApproved;
         return $this;
     }
 

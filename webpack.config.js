@@ -26,6 +26,7 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableSassLoader()
     .autoProvidejQuery()
+    .enableReactPreset()
     // uncomment to create hashed filenames (e.g. app.abc123.css)
     // .enableVersioning(Encore.isProduction())
 

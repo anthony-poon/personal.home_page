@@ -5,18 +5,32 @@ namespace App\Command;
 use App\Entity\Base\Directory\AccessToken;
 use App\Entity\Base\Directory\DirectoryGroup;
 use App\Entity\Base\Directory\User;
+use App\Entity\Demo\GalleryAsset;
+use App\Entity\Demo\GalleryItem;
+use Doctrine\ORM\emInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use GuzzleHttp\Client;
+use joshtronic\LoremIpsum;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class InitCommand extends Command {
-    private $entityManager;
+    private $em;
     private $passwordEncoder;
+    private const GALLERY_ITEM_COUNT = 15;
+    private const GALLERY_ASSET_COUNT = 3;
+    private const GALLERY_ASSET_MAX_WIDTH = 1200;
+    private const GALLERY_ASSET_MIN_WIDTH = 200;
+    private const GALLERY_ASSET_MAX_HEIGHT = 900;
+    private const GALLERY_ASSET_MIN_HEIGHT = 200;
+    private $output;
+    private $input;
+    private $lorem;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder, $name = null) {
-        $this->entityManager = $entityManager;
+    public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, $name = null) {
+        $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
         parent::__construct($name);
     }
@@ -26,6 +40,13 @@ class InitCommand extends Command {
             ->setDescription("Create root user and role");
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln("Creating Admin Group");
         $adminGroup = $this->initGroup("Admin Group", "admin_group");
@@ -48,16 +69,24 @@ class InitCommand extends Command {
         $output->writeln("Password: ".$root->getPlainPassword());
         $adminGroup->addChild($root);
 
-        $this->entityManager->persist($adminGroup);
-        $this->entityManager->persist($userGroup);
-        $this->entityManager->persist($adminToken);
-        $this->entityManager->persist($userToken);
-        $this->entityManager->persist($root);
-        $this->entityManager->flush();
+        $galleryItems = [];
+        for ($i = 1; $i <= self::GALLERY_ITEM_COUNT; $i++) {
+            $output->writeln("Creating Gallery Item $i");
+            $galleryItem = $this->initGalleryItem();
+            $galleryItems[] = $galleryItem;
+            $this->em->persist($galleryItem);
+        }
+
+        $this->em->persist($adminGroup);
+        $this->em->persist($userGroup);
+        $this->em->persist($adminToken);
+        $this->em->persist($userToken);
+        $this->em->persist($root);
+        $this->em->flush();
     }
 
     private function initAccessToken(string $tokenStr) {
-        $repo = $this->entityManager->getRepository(AccessToken::class);
+        $repo = $this->em->getRepository(AccessToken::class);
         $token = $repo->findOneBy([
             "token" => $tokenStr
         ]);
@@ -69,7 +98,7 @@ class InitCommand extends Command {
     }
 
     private function initGroup(string $groupName, string $shortStr): DirectoryGroup {
-        $repo = $this->entityManager->getRepository(DirectoryGroup::class);
+        $repo = $this->em->getRepository(DirectoryGroup::class);
         $group = $repo->findOneBy([
             "shortStr" => $shortStr
         ]);
@@ -82,7 +111,7 @@ class InitCommand extends Command {
     }
 
     private function initUser(string $username, string $password = "password"): User {
-        $userRepo = $this->entityManager->getRepository(User::class);
+        $userRepo = $this->em->getRepository(User::class);
         $user = $userRepo->findOneBy([
             "username" => $username
         ]);
@@ -94,5 +123,34 @@ class InitCommand extends Command {
         $user->setPlainPassword($password);
         $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
         return $user;
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     * @return GalleryItem
+     */
+    private function initGalleryItem(): GalleryItem {
+        $galleryItem = new GalleryItem();
+        $galleryItem->setIsApproved(true);
+        if (!$this->lorem) {
+            $this->lorem = new LoremIpsum();
+        }
+        $galleryItem->setHeader(ucwords($this->lorem->words(2)));
+        $galleryItem->setContent($this->lorem ->paragraphs(2));
+        $width = random_int(self::GALLERY_ASSET_MIN_WIDTH, self::GALLERY_ASSET_MAX_WIDTH);
+        $height = random_int(self::GALLERY_ASSET_MIN_HEIGHT, self::GALLERY_ASSET_MAX_HEIGHT);
+        for ($i = 0; $i < self::GALLERY_ASSET_COUNT; $i++) {
+            $client = new Client();
+            $url = "https://picsum.photos/$width/$height?random";
+            $response = $client->request("GET", $url);
+            $base64 = base64_encode($response->getBody());
+            $asset = new GalleryAsset();
+            $asset->setBase64($base64);
+            $asset->setMimeType("image/jpeg");
+            $asset->setGalleryItem($galleryItem);
+            $this->em->persist($asset);
+        }
+        return $galleryItem;
     }
 }
