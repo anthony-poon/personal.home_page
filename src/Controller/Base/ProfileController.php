@@ -5,12 +5,12 @@ namespace App\Controller\Base;
 use App\Entity\Base\Directory\DirectoryGroup;
 use App\Entity\Base\Directory\User;
 use App\FormType\Base\UserForm;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class ProfileController extends Controller {
+class ProfileController extends AbstractController {
     /**
      * @Route("/profile", name="profile_edit")
      */

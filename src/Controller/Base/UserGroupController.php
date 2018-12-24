@@ -12,14 +12,14 @@ use App\Entity\Base\Directory\DirectoryGroup;
 use App\FormType\Base\DirectoryGroupsForm;
 use App\Service\BaseTemplateHelper;
 use App\Service\EntityTableHelper;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserGroupController extends Controller {
+class UserGroupController extends AbstractController {
     /**
      * @Route("/admin/user-groups", name="user_group_list")
      */

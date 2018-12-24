@@ -3,10 +3,10 @@
 namespace App\Controller\Base;
 
 use App\Service\BaseTemplateHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class DefaultController extends Controller {
+class DefaultController extends AbstractController {
     /**
      * @Route("/", name="home")
      */

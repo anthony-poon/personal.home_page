@@ -6,14 +6,14 @@ use App\Entity\Base\Directory\User;
 use App\FormType\Base\UserForm;
 use App\Service\BaseTemplateHelper;
 use App\Service\EntityTableHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserController extends Controller {
+class UserController extends AbstractController {
     public function __construct(BaseTemplateHelper $helper, RouterInterface $router) {
         $helper->setTitle("Administration");
     }
