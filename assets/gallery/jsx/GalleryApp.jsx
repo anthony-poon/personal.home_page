@@ -4,19 +4,36 @@ import GalleryItem from './GalleryItem';
 import "./GalleryUpload";
 import GalleryUpload from "./GalleryUpload";
 import GalleryModal from  "./GalleryModal";
+import GalleryViewer from "./GalleryViewer";
 
 export default class GalleryApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             items: [],
-            modal: null
+            modal: {
+                isVisible: false,
+                isLoaded: true,
+                content: null
+            }
         };
     }
 
-    expandItem(id) {
-        history.pushState(null, null, "/gallery/" + id);
-        $(window).trigger("pushstate");
+    expandItem(item) {
+        history.pushState(null, null, "/gallery/" + item.id);
+        this.setState({
+            modal: {
+                isVisible: true,
+                content: (
+                    <GalleryViewer
+                        id={item.id}
+                        header={item.header}
+                        content={item.content}
+                        assets={item.assets}
+                    />
+                )
+            }
+        })
     };
 
     componentDidMount() {
@@ -31,7 +48,7 @@ export default class GalleryApp extends React.Component {
                                  content={v.content}
                                  assets={v.assets}
                                  onClick={() => {
-                                     this.expandItem(v.id)
+                                     this.expandItem(v)
                                  }}
                             />
                         </div>
@@ -56,12 +73,21 @@ export default class GalleryApp extends React.Component {
     render() {
         return (
             <div className={"gallery-app"}>
-                <div className="row">
-                    {this.state.items}
+                <div className={"container py-5"}>
+                    <div className="row">
+                        {this.state.items}
+                    </div>
+
                 </div>
                 <div className={"gallery-app__upload-button"}>
                     <GalleryUpload
                         ajaxUrl={this.props.ajaxUrl}
+                    />
+                </div>
+                <div className={this.state.modal.isVisible ? "gallery-app__modal" : "gallery-app__modal d-none"}>
+                    <GalleryModal
+                        content={this.state.modal.content}
+                        isVisible={this.state.modal.isVisible}
                     />
                 </div>
             </div>

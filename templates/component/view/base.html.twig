@@ -21,22 +21,8 @@
                 {% include("/component/view/side_menu_collapse.html.twig") %}
             </div>
         {% endif %}
-        <div class="{{ template_helper.getLayout == "full_width" ? "container-fluid" : "container" }}" id="main-wrapper">
-            {% if template_helper.getSideMenuStyle == "inline" %}
-                <div class="row">
-                    {% include("/component/view/side_menu_inline.html.twig") %}
-                </div>
-
-            {% endif %}
-            <div class="row">
-                <div class="col my-5 {{ template_helper.getLayout == "full_width" ? "px-5" : "" }}" id="content-wrapper">
-                    <div class="row">
-                        <div class="col">
-                            {% block body %}{% endblock %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="container-fluid" id="main-wrapper">
+            {% block body %}{% endblock %}
         </div>
         <div id="notification" class="position-fixed fixed-top container-fluid alert alert-danger d-none">
             <div id="notification-body" class="my-1 container">
