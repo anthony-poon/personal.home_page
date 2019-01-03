@@ -4,29 +4,30 @@ namespace App\Controller\Base;
 
 use App\Entity\Base\Asset;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class AssetController extends AbstractController {
 
     /**
      * @Route("/api/assets/{id}", name="api_asset_get_item", methods={"GET"})
+     * @param int $id
+     * @param Request $request
+     * @return Response|NotFoundHttpException
      */
-    public function getItem($id, Request $request) {
-
+    public function getItem(int $id, ParameterBagInterface $bag, Request $request) {
         $repo = $this->getDoctrine()->getRepository(Asset::class);
         $asset = $repo->find($id);
         $this->denyAccessUnlessGranted(ASSET::READ_ACCESS, $asset);
+        $folder = $bag->get("assets_path");
         if ($asset) {
-            $file = base64_decode($asset->getBase64());
-            $rsp = new Response();
-            $rsp->headers->set("Content-Type", $asset->getMimeType());
-            $rsp->headers->set("Content-Disposition", "inline");
-            $rsp->setContent($file);
+            $path = realpath($folder."/".$asset->getAssetPath());
+            $rsp = new BinaryFileResponse($path);
             return $rsp;
         } else {
             return new NotFoundHttpException("Unable to locate entity");

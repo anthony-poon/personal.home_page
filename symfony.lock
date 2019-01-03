@@ -92,14 +92,38 @@
     "guzzlehttp/psr7": {
         "version": "1.5.2"
     },
+    "illuminate/cache": {
+        "version": "5.7.19"
+    },
+    "illuminate/contracts": {
+        "version": "5.7.19"
+    },
+    "illuminate/filesystem": {
+        "version": "5.7.19"
+    },
+    "illuminate/support": {
+        "version": "5.7.19"
+    },
+    "intervention/image": {
+        "version": "2.4.2"
+    },
+    "intervention/imagecache": {
+        "version": "2.3.3"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "jeremeamia/superclosure": {
+        "version": "2.4.0"
     },
     "joshtronic/php-loremipsum": {
         "version": "1.0.3"
     },
     "monolog/monolog": {
         "version": "1.23.0"
+    },
+    "nesbot/carbon": {
+        "version": "1.36.2"
     },
     "nikic/php-parser": {
         "version": "v4.0.2"
@@ -370,6 +394,15 @@
     },
     "symfony/test-pack": {
         "version": "v1.0.2"
+    },
+    "symfony/translation": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "1fb02a6e1c8f3d4232cce485c9afa868d63b115a"
+        }
     },
     "symfony/twig-bridge": {
         "version": "v4.1.0"

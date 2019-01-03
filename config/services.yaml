@@ -5,7 +5,8 @@ parameters:
     layout: 'compact'
     # menu_style: 'inline' / 'collapse'
     side_menu_style: 'collapse'
-
+    locale: 'en'
+    assets_path: "%kernel.root_dir%/../var/assets"
 services:
     # default configuration for services in *this* file
     _defaults:

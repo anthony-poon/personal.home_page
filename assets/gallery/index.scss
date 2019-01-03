@@ -12,28 +12,97 @@
             .gallery-img-container {
                 @extend .card-img-top;
                 @extend .bg-dark;
-                height: 250px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                background-size: cover;
+                position: relative;
                 .gallery-img {
+                    object-fit: cover;
                     width: 100%;
-                    height: 100%;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    background-position: center center;
+                    height: 250px;
                 }
-
             }
             .gallery-body {
                 @extend .card-body;
                 .gallery-header {
-                    @extend .h5;
+                    @extend .h6;
                     @extend .text-black-50;
                     @extend .text-monospace;
                 }
 
             }
         }
+    }
+
+    .gallery-app__upload-button {
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
+    }
+}
+
+#gallery-modal-container{
+    @extend .container-fluid;
+    @extend .p-0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1072;
+    .gallery-modal {
+        @extend .row;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        max-height: 100%;
+        overflow-y: auto;
+        .gallery-modal__dialog {
+            @extend .col-md-10;
+            @extend .col;
+            @extend .bg-dark;
+            .gallery-dialog{
+                @extend .row;
+                height: 100%;
+                .gallery-dialog__img-wrapper {
+                    @extend .col;
+                    @extend .p-0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    img {
+                        max-width: 100%;
+                        object-fit: contain;
+                    }
+                }
+                .gallery-dialog__body {
+                    background-color: white;
+                    @extend .col-md-3;
+                    @extend .col-12;
+                    @extend .p-3;
+                    display: flex;
+                    flex-direction: column;
+                    .gallery-body__header {
+                        @extend .my-3;
+                        @extend .text-primary;
+                        flex-shrink: 0;
+                    }
+                    .gallery-body__content {
+                        overflow-y: auto;
+                    }
+                    .gallery-body__btn-bar {
+                        @extend .mt-3;
+                        display: flex;
+                        flex-shrink: 0;
+                        .btn-like {
+                            @extend .p-1;
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 }

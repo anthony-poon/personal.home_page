@@ -7,30 +7,41 @@ use App\Entity\Base\Directory\DirectoryGroup;
 use App\Entity\Base\Directory\User;
 use App\Entity\Demo\GalleryAsset;
 use App\Entity\Demo\GalleryItem;
-use Doctrine\ORM\emInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use joshtronic\LoremIpsum;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class InitCommand extends Command {
     private $em;
     private $passwordEncoder;
     private const GALLERY_ITEM_COUNT = 15;
-    private const GALLERY_ASSET_COUNT = 3;
+    private const GALLERY_ASSET_PER_ITEM_COUNT = 3;
+    private const GALLERY_ASSET_COUNT = 50;
     private const GALLERY_ASSET_MAX_WIDTH = 1200;
     private const GALLERY_ASSET_MIN_WIDTH = 200;
     private const GALLERY_ASSET_MAX_HEIGHT = 900;
     private const GALLERY_ASSET_MIN_HEIGHT = 200;
+    /**
+     * @var OutputInterface
+     */
     private $output;
-    private $input;
     private $lorem;
+    private $folder;
 
-    public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, $name = null) {
+    public function __construct(EntityManagerInterface $em, ParameterBagInterface $bag, UserPasswordEncoderInterface $passwordEncoder, $name = null) {
         $this->em = $em;
+        $this->folder = realpath($bag->get("assets_path"));
+        if (!$this->folder) {
+            throw new \Exception("Invalid var folder.");
+        }
+        if (!realpath($this->folder."/placeholder")) {
+            throw new \Exception("Invalid var folder.");
+        }
         $this->passwordEncoder = $passwordEncoder;
         parent::__construct($name);
     }
@@ -48,6 +59,7 @@ class InitCommand extends Command {
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
+        $this->output = $output;
         $output->writeln("Creating Admin Group");
         $adminGroup = $this->initGroup("Admin Group", "admin_group");
         $output->writeln("Creating User Group");
@@ -69,10 +81,11 @@ class InitCommand extends Command {
         $output->writeln("Password: ".$root->getPlainPassword());
         $adminGroup->addChild($root);
 
+        $images = $this->initImage();
         $galleryItems = [];
         for ($i = 1; $i <= self::GALLERY_ITEM_COUNT; $i++) {
             $output->writeln("Creating Gallery Item $i");
-            $galleryItem = $this->initGalleryItem();
+            $galleryItem = $this->initGalleryItem($images);
             $galleryItems[] = $galleryItem;
             $this->em->persist($galleryItem);
         }
@@ -128,9 +141,37 @@ class InitCommand extends Command {
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
-     * @return GalleryItem
      */
-    private function initGalleryItem(): GalleryItem {
+    private function initImage(): array {
+        $images = [];
+        $folder = $this->folder."/placeholder";
+        foreach (scandir($folder) as $name) {
+            if ($name != "." && $name != "..") {
+                $path = "$folder/$name";
+                if (is_file($path) && preg_match("/^image/", mime_content_type($path))) {
+                    $this->output->writeln("Found $path.");
+                    $images[] = "placeholder/".$name;
+                }
+            }
+        }
+        // Download some image only if not enough
+        $count = self::GALLERY_ASSET_COUNT - count($images);
+        for ($i = 0; $i < $count; $i++) {
+            $client = new Client();
+            $width = random_int(self::GALLERY_ASSET_MIN_WIDTH, self::GALLERY_ASSET_MAX_WIDTH);
+            $height = random_int(self::GALLERY_ASSET_MIN_HEIGHT, self::GALLERY_ASSET_MAX_HEIGHT);
+            $url = "https://picsum.photos/$width/$height?random";
+            $response = $client->request("GET", $url);
+            $name = uniqid().".png";
+            file_put_contents("$folder/$name", $response->getBody());
+            $this->output->writeln("Generated $folder/$name.");
+            $images[] = "placeholder/".$name;
+        }
+        return $images;
+    }
+
+
+    private function initGalleryItem(array $images): GalleryItem {
         $galleryItem = new GalleryItem();
         $galleryItem->setIsApproved(true);
         if (!$this->lorem) {
@@ -138,16 +179,11 @@ class InitCommand extends Command {
         }
         $galleryItem->setHeader(ucwords($this->lorem->words(2)));
         $galleryItem->setContent($this->lorem ->paragraphs(2));
-        $width = random_int(self::GALLERY_ASSET_MIN_WIDTH, self::GALLERY_ASSET_MAX_WIDTH);
-        $height = random_int(self::GALLERY_ASSET_MIN_HEIGHT, self::GALLERY_ASSET_MAX_HEIGHT);
-        for ($i = 0; $i < self::GALLERY_ASSET_COUNT; $i++) {
-            $client = new Client();
-            $url = "https://picsum.photos/$width/$height?random";
-            $response = $client->request("GET", $url);
-            $base64 = base64_encode($response->getBody());
+        foreach (array_rand($images, self::GALLERY_ASSET_PER_ITEM_COUNT) as $key) {
+            $path = $images[$key];
             $asset = new GalleryAsset();
-            $asset->setBase64($base64);
-            $asset->setMimeType("image/jpeg");
+            $asset->setAssetPath($path);
+            $asset->setMimeType(mime_content_type($this->folder."/".$path));
             $asset->setGalleryItem($galleryItem);
             $this->em->persist($asset);
         }

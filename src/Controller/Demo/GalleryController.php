@@ -12,31 +12,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class GalleryController extends AbstractController {
-    private const PLACEHOLDER_COUNT = 15;
-    private const IMG_W_UP_BOUND = 600;
-    private const IMG_W_LOW_BOUND = 300;
-    private const IMG_H_UP_BOUND = 600;
-    private const IMG_H_LOW_BOUND = 300;
     /**
      * @Route("/gallery", name="gallery_index")
+     * @Route("/gallery/{id}", requirements={"id"="\d+"})
      */
     public function index() {
-        $repo = $this->getDoctrine()->getRepository(GalleryItem::class);
-        foreach ($repo->findAll() as $galleryItem) {
-            /* @var GalleryItem $galleryItem */
-            $asset = $galleryItem->getAssets()->first();
-            $data[] = [
-                "header" => $galleryItem->getHeader(),
-                "content" => $galleryItem->getContent(),
-                "url" => $this->generateUrl("api_asset_get_item", [
-                    "id" => $asset->getId()
-                ])
-            ];
-        }
-        $form = $this->createForm(GalleryItemForm::class);
-        return $this->render('render/demo/gallery/index.html.twig', [
-            'data' => $data,
-            'form' => $form->createView()
-        ]);
+        return $this->render('render/demo/gallery/index.html.twig');
     }
 }

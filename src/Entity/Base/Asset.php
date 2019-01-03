@@ -36,15 +36,9 @@ class Asset {
 
     /**
      * @var string
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=1024)
      */
-    private $base64;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=256, nullable=true)
-     */
-    private $namespace;
+    private $assetPath;
 
     /**
      * @var string
@@ -63,36 +57,16 @@ class Asset {
     /**
      * @return string
      */
-    public function getBase64(): ?string
-    {
-        return $this->base64;
+    public function getAssetPath(): string {
+        return $this->assetPath;
     }
 
     /**
-     * @param string $base64
+     * @param string $assetPath
      * @return Asset
      */
-    public function setBase64(string $base64): Asset
-    {
-        $this->base64 = $base64;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNamespace(): ?string
-    {
-        return $this->namespace;
-    }
-
-    /**
-     * @param string $namespace
-     * @return Asset
-     */
-    public function setNamespace(string $namespace): Asset
-    {
-        $this->namespace = $namespace;
+    public function setAssetPath(string $assetPath): Asset {
+        $this->assetPath = $assetPath;
         return $this;
     }
 

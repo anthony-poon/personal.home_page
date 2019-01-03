@@ -9,91 +9,10 @@
 {% endblock %}
 
 {% block body %}
-    <div id="gallery-container" class="row">
-        {% set index = 0 %}
-        {% for item in data %}
-            <div class="gallery-item-wrapper">
-                <div class="gallery-item">
-                    <div class="gallery-img-container">
-                        <div class="gallery-img" style="background-image: url({{ asset(item["url"]) }})">
-                        </div>
-                    </div>
-                    <div class="gallery-body">
-                        <div class="row">
-                            <div class="col">
-                                <div class="gallery-header">
-                                    {{ item["header"] }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <button type="button" class="btn btn-sm bg-light rounded-circle p-0"  data-toggle="collapse" data-target="#collapse_content_{{ index }}">
-                                    <i class="material-icons align-middle text-primary">expand_more</i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row collapse" id="collapse_content_{{ index }}">
-                            <div class="col">
-                                {{ item["content"]|nl2br }}
-                            </div>
-                        </div>
-                        <div class="gallery-bar row">
-                            <div class="col-auto btn-like">
-                                <i class="far fa-heart"></i>
-                            </div>
-                            <div class="col-auto btn-like">
-                                <i class="fas fa-share-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            {% set index = index + 1 %}
-        {% endfor %}
+    <div id="gallery-container" data-ajax-url="{{ path("api_gallery_get_gallery_items") }}">
     </div>
-    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <button id="camera-btn" type="button" class="position-fixed btn btn-primary btn-sm rounded-circle p-3 shadow-lg" style="bottom: 5%; right: 3%;">
-            <i class="material-icons text-light align-middle">
-                photo_camera
-            </i>
-        </button>
-        <input type="file" class="d-none" accept="image/*" id="camera-input"/>
-    {% else %}
-        <a href="{{ path("security_login", {
-            "redirect": app.request.uri
-        }) }}">
-            <button id="camera-btn" type="button" class="position-fixed btn btn-primary btn-sm rounded-circle p-3 shadow-lg" style="bottom: 5%; right: 3%;">
-                <i class="material-icons text-light align-middle">
-                    photo_camera
-                </i>
-            </button>
-        </a>
-    {% endif %}
 {% endblock %}
 
 {% block modal %}
-    <div class="modal fade" id="camera-modal" tabindex="-1" role="dialog" aria-labelledby="camera-modal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form data-ajax-url="{{ path("gallery_ajax_index") }}">
-                    <div class="modal-body">
-                        <div id="resize-container" class="d-flex justify-content-center align-items-center mb-3" data-m-height="300" data-m-width="300">
-                            <img id="resize-img" class="img-thumbnail" src="#"/>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="header" placeholder="Title" id="input-header">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="content" placeholder="Content" id="input-content">
-                        </div>
-                        <input type="text" class="form-control d-none" name="base64_file" id="input-file">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <div id="gallery-modal-container" data-ajax-url="{{ path("api_gallery_get_gallery_items") }}"></div>
 {% endblock %}

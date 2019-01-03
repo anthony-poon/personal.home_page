@@ -18,6 +18,7 @@ Encore
     .createSharedEntry('vendor', [
         'jquery',
         'bootstrap',
+        'babel-polyfill',
         '@fortawesome/fontawesome-free/css/all.css',
         'datatables.net-bs4/css/dataTables.bootstrap4.css',
         'datatables.net-buttons-bs4/css/buttons.bootstrap4.css',
