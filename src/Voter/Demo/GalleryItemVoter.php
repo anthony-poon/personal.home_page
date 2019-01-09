@@ -31,6 +31,7 @@ class GalleryItemVoter extends Voter {
                         GalleryItem::READ_ACCESS,
                         GalleryItem::UPDATE_ACCESS,
                         GalleryItem::DELETE_ACCESS,
+                        GalleryItem::LIKE_ACCESS
                     ]);
                 case GalleryAsset::class:
                     /* @var $subject \App\Entity\Demo\GalleryAsset */
@@ -39,6 +40,7 @@ class GalleryItemVoter extends Voter {
                         GalleryAsset::READ_ACCESS,
                         GalleryAsset::UPDATE_ACCESS,
                         GalleryAsset::DELETE_ACCESS,
+
                     ]);
                 default:
                     return false;
@@ -62,6 +64,8 @@ class GalleryItemVoter extends Voter {
                     case GalleryItem::DELETE_ACCESS:
                         /* @var \App\Entity\Demo\GalleryItem $subject */
                         return $isAdmin || ($isLoggedIn && $subject->getOwner() === $user);
+                    case GalleryItem::LIKE_ACCESS:
+                        return $user instanceof User && $subject->getOwner() !== $user;
                     default:
                         return false;
                 }

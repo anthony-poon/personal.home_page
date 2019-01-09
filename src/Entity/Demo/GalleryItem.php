@@ -12,7 +12,6 @@ use App\Entity\Base\Directory\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class GalleryItem
@@ -25,6 +24,7 @@ class GalleryItem {
     public const READ_ACCESS = "read";
     public const UPDATE_ACCESS = "update";
     public const DELETE_ACCESS = "delete";
+    public const LIKE_ACCESS = "like";
     /**
      * @var int
      * @ORM\Column(type="integer", length=11)
@@ -42,7 +42,7 @@ class GalleryItem {
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=true)
      * @Assert\Length(
      *     min=1,
      *     max=64,
@@ -59,10 +59,20 @@ class GalleryItem {
     private $content;
 
     /**
-     * @var Collection
-     * @ORM\OneToMany(targetEntity="GalleryAsset", mappedBy="galleryItem")
+     * @var GalleryAsset
+     * @ORM\OneToOne(targetEntity="GalleryAsset", inversedBy="galleryItem", cascade={"remove"})
      */
-    private $assets;
+    private $asset;
+
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="App\Entity\Base\Directory\User")
+     * @ORM\JoinTable(name="user_like_mapping",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="gallery_item_id", referencedColumnName="id")}
+     * )
+     */
+    private $likes;
 
     /**
      * @var bool
@@ -71,7 +81,7 @@ class GalleryItem {
     private $isApproved = false;
 
     public function __construct() {
-        $this->assets = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     /**
@@ -108,7 +118,7 @@ class GalleryItem {
      * @param string $header
      * @return GalleryItem
      */
-    public function setHeader(string $header): GalleryItem {
+    public function setHeader(?string $header): GalleryItem {
         $this->header = $header;
         return $this;
     }
@@ -124,16 +134,37 @@ class GalleryItem {
      * @param string $content
      * @return GalleryItem
      */
-    public function setContent(string $content): GalleryItem {
+    public function setContent(?string $content): GalleryItem {
         $this->content = $content;
+        return $this;
+    }
+
+    /**
+     * @return GalleryAsset
+     */
+    public function getAsset(): GalleryAsset {
+        return $this->asset;
+    }
+
+    public function setAsset(GalleryAsset $asset): GalleryItem {
+        $this->asset = $asset;
         return $this;
     }
 
     /**
      * @return Collection
      */
-    public function getAssets(): Collection {
-        return $this->assets;
+    public function getLikes(): Collection {
+        return $this->likes;
+    }
+
+    /**
+     * @param User $user
+     * @return GalleryItem
+     */
+    public function addLikes(User $user): GalleryItem {
+        $this->likes->add($user);
+        return $this;
     }
 
     /**

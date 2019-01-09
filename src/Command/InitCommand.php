@@ -20,8 +20,6 @@ class InitCommand extends Command {
     private $em;
     private $passwordEncoder;
     private const GALLERY_ITEM_COUNT = 15;
-    private const GALLERY_ASSET_PER_ITEM_COUNT = 3;
-    private const GALLERY_ASSET_COUNT = 50;
     private const GALLERY_ASSET_MAX_WIDTH = 1200;
     private const GALLERY_ASSET_MIN_WIDTH = 200;
     private const GALLERY_ASSET_MAX_HEIGHT = 900;
@@ -37,9 +35,6 @@ class InitCommand extends Command {
         $this->em = $em;
         $this->folder = realpath($bag->get("assets_path"));
         if (!$this->folder) {
-            throw new \Exception("Invalid var folder.");
-        }
-        if (!realpath($this->folder."/placeholder")) {
             throw new \Exception("Invalid var folder.");
         }
         $this->passwordEncoder = $passwordEncoder;
@@ -81,11 +76,10 @@ class InitCommand extends Command {
         $output->writeln("Password: ".$root->getPlainPassword());
         $adminGroup->addChild($root);
 
-        $images = $this->initImage();
         $galleryItems = [];
         for ($i = 1; $i <= self::GALLERY_ITEM_COUNT; $i++) {
             $output->writeln("Creating Gallery Item $i");
-            $galleryItem = $this->initGalleryItem($images);
+            $galleryItem = $this->initGalleryItem();
             $galleryItems[] = $galleryItem;
             $this->em->persist($galleryItem);
         }
@@ -142,51 +136,32 @@ class InitCommand extends Command {
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
-    private function initImage(): array {
-        $images = [];
-        $folder = $this->folder."/placeholder";
-        foreach (scandir($folder) as $name) {
-            if ($name != "." && $name != "..") {
-                $path = "$folder/$name";
-                if (is_file($path) && preg_match("/^image/", mime_content_type($path))) {
-                    $this->output->writeln("Found $path.");
-                    $images[] = "placeholder/".$name;
-                }
-            }
-        }
-        // Download some image only if not enough
-        $count = self::GALLERY_ASSET_COUNT - count($images);
-        for ($i = 0; $i < $count; $i++) {
-            $client = new Client();
-            $width = random_int(self::GALLERY_ASSET_MIN_WIDTH, self::GALLERY_ASSET_MAX_WIDTH);
-            $height = random_int(self::GALLERY_ASSET_MIN_HEIGHT, self::GALLERY_ASSET_MAX_HEIGHT);
-            $url = "https://picsum.photos/$width/$height?random";
-            $response = $client->request("GET", $url);
-            $name = uniqid().".png";
-            file_put_contents("$folder/$name", $response->getBody());
-            $this->output->writeln("Generated $folder/$name.");
-            $images[] = "placeholder/".$name;
-        }
-        return $images;
+    private function initAsset(): GalleryAsset {
+        $width = random_int(self::GALLERY_ASSET_MIN_WIDTH, self::GALLERY_ASSET_MAX_WIDTH);
+        $height = random_int(self::GALLERY_ASSET_MIN_HEIGHT, self::GALLERY_ASSET_MAX_HEIGHT);
+        $url = "https://picsum.photos/$width/$height?random";
+        $gAsset = GalleryAsset::createFromImage($url, $this->folder);
+        $this->output->writeln("Generated ".$gAsset->getAssetPath());
+        return $gAsset;
     }
 
-
-    private function initGalleryItem(array $images): GalleryItem {
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    private function initGalleryItem(): GalleryItem {
         $galleryItem = new GalleryItem();
         $galleryItem->setIsApproved(true);
         if (!$this->lorem) {
             $this->lorem = new LoremIpsum();
         }
         $galleryItem->setHeader(ucwords($this->lorem->words(2)));
-        $galleryItem->setContent($this->lorem ->paragraphs(2));
-        foreach (array_rand($images, self::GALLERY_ASSET_PER_ITEM_COUNT) as $key) {
-            $path = $images[$key];
-            $asset = new GalleryAsset();
-            $asset->setAssetPath($path);
-            $asset->setMimeType(mime_content_type($this->folder."/".$path));
-            $asset->setGalleryItem($galleryItem);
-            $this->em->persist($asset);
-        }
+        $galleryItem->setContent($this->lorem ->paragraphs(1));
+
+        $asset = $this->initAsset();
+        $galleryItem->setAsset($asset);
+        $this->em->persist($galleryItem);
+        $this->em->persist($asset);
         return $galleryItem;
     }
 }

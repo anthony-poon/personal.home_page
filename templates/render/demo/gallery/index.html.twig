@@ -9,6 +9,10 @@
 {% endblock %}
 
 {% block body %}
-    <div id="gallery-container" data-ajax-url="{{ path("api_gallery_get_gallery_items") }}">
+    <div id="gallery-container"
+         data-ajax-url="{{ path("api_gallery_get_gallery_items") }}"
+         data-is-logged-in="{{ is_granted("IS_AUTHENTICATED_FULLY") }}"
+         data-sign-in-link="{{ path("security_login") }}"
+    >
     </div>
 {% endblock %}

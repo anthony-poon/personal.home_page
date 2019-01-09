@@ -88,4 +88,8 @@ class Asset {
         return $this;
     }
 
+    static public function getFolder() {
+        return "";
+    }
+
 }

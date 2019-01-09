@@ -24,7 +24,7 @@ class AssetController extends AbstractController {
         $repo = $this->getDoctrine()->getRepository(Asset::class);
         $asset = $repo->find($id);
         $this->denyAccessUnlessGranted(ASSET::READ_ACCESS, $asset);
-        $folder = $bag->get("assets_path");
+        $folder = $bag->get("assets_path").DIRECTORY_SEPARATOR.$asset->getFolder();
         if ($asset) {
             $path = realpath($folder."/".$asset->getAssetPath());
             $rsp = new BinaryFileResponse($path);

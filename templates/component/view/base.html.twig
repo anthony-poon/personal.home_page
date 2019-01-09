@@ -15,14 +15,20 @@
         {% block css %}{% endblock %}
     </head>
     <body>
-        {% include("/component/view/top_navbar.html.twig") %}
         {% if template_helper.getSideMenuStyle == "collapse" %}
             <div class="row">
                 {% include("/component/view/side_menu_collapse.html.twig") %}
             </div>
         {% endif %}
         <div class="container-fluid" id="main-wrapper">
-            {% block body %}{% endblock %}
+            <div class="row">
+                <div class="col p-0">
+                    {% include("/component/view/top_navbar.html.twig") %}
+                </div>
+            </div>
+            <div class="container">
+                {% block body %}{% endblock %}
+            </div>
         </div>
         <div id="notification" class="position-fixed fixed-top container-fluid alert alert-danger d-none">
             <div id="notification-body" class="my-1 container">

@@ -5,7 +5,8 @@
         @extend .col-xl-3;
         @extend .col-lg-4;
         @extend .col-md-6;
-        @extend .col-sm-12;
+        @extend .col-sm-6;
+        @extend .col-12;
         .gallery-item {
             @extend .card;
             @extend .mb-3;
@@ -41,62 +42,63 @@
         bottom: 30px;
     }
     .gallery-app__modal {
-        @extend .container-fluid;
-        @extend .p-0;
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         z-index: 1072;
-        height: 100%;
+        height: 100vh;
         .gallery-modal {
-            @extend .row;
             width: 100vw;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: center;
-            max-height: 100%;
-            overflow-y: auto;
-            .gallery-modal__wrapper {
-                @extend .col-md-10;
-                @extend .col;
-                @extend .bg-dark;
-                .gallery-viewer{
-                    @extend .row;
-                    height: 100%;
-                    .gallery-viewer__img-wrapper {
-                        @extend .col;
-                        @extend .p-0;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        img {
-                            max-width: 100%;
-                            object-fit: contain;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            .gallery-viewer{
+                .gallery-viewer__img-wrapper {
+                    img {
+                        max-width: 100%;
+                        object-fit: contain;
+                    }
+                }
+                .gallery-viewer__body {
+                    background-color: white;
+                    .gallery-viewer__header {
+                        @extend .text-primary;
+                    }
+                    .gallery-viewer__content {
+                        overflow-y: auto;
+                    }
+                    .gallery-viewer__btn-bar {
+                        .btn-like {
+                            @extend .p-1;
                         }
                     }
-                    .gallery-viewer__body {
-                        background-color: white;
-                        @extend .col-md-3;
-                        @extend .col-12;
-                        @extend .p-3;
-                        display: flex;
-                        flex-direction: column;
-                        .gallery-viewer__header {
-                            @extend .my-3;
-                            @extend .text-primary;
-                            flex-shrink: 0;
-                        }
-                        .gallery-viewer__content {
-                            overflow-y: auto;
-                        }
-                        .gallery-viewer__btn-bar {
-                            @extend .mt-3;
-                            display: flex;
-                            flex-shrink: 0;
-                            .btn-like {
-                                @extend .p-1;
-                            }
+                }
+            }
+            .gallery-upload-form {
+                background-color: white;
+                overflow-y: auto;
+                .gallery-upload-form__header {
+                    .gallery-upload-form__spinner {
+                        @include loading-spinner($primary);
+                    }
+                    position: sticky;
+                    border-bottom: 1px rgba(0, 0, 0, 0.1) solid;
+                    .gallery-upload-form__progress-bar {
+                        position: absolute;
+                        bottom: -1px;
+                        height: 1px;
+                        background-color: $primary;
+                        transition: width 0.7s;
+                    }
+
+                }
+                .gallery-upload-form__img-wrapper {
+                    @extend .p-1;
+                    .gallery-upload-form__img-outline {
+                        @extend .img-thumbnail;
+                        .gallery-upload-form__img{
+                            background-repeat: no-repeat;
+                            background-size: cover;
+                            background-position: center;
                         }
                     }
                 }
