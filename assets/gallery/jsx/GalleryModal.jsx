@@ -5,9 +5,6 @@ export default class GalleryModal extends React.Component{
         super(props);
     }
 
-    btnClose() {
-    }
-
     render() {
         if (this.props.isVisible) {
             $("body").css("overflow-y", "hidden");
@@ -16,15 +13,12 @@ export default class GalleryModal extends React.Component{
         }
         return (
             <div className={this.props.isVisible ? "gallery-modal" : "gallery-modal d-none"}>
-                <div className={"row h-100"}>
-                    {this.props.content}
-                </div>
+                {this.props.content}
             </div>
         );
     }
 };
 
 GalleryModal.defaultProps = {
-    isVisible: false,
-    isFullSize: false
+    isVisible: false
 };

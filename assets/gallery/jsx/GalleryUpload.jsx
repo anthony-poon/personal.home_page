@@ -7,12 +7,12 @@ export default class GalleryUpload extends React.Component {
     }
 
     onBtnClick() {
-        $("[name='gallery[file-upload]']").val("").trigger("click");
+        $("#js-upload").val("").trigger("click");
     }
 
     componentDidMount() {
-        $(document).on("change", "[name='gallery[file-upload]']", async () => {
-            let files = $("[name='gallery[file-upload]']").prop("files");
+        $(document).on("change", "#js-upload", async () => {
+            let files = $("#js-upload").prop("files");
             if (files.length > 0) {
                 this.props.onTrigger(files);
             }
@@ -27,7 +27,8 @@ export default class GalleryUpload extends React.Component {
                 }}>
                     <i className="fas fa-camera"/>
                 </button>
-                <input type="file" className="d-none" accept="image/*" name="gallery[file-upload]" multiple/>
+                <input type="file" id={"js-upload"} className="d-none" accept="image/png,image/jpeg,image/bmp" name="upload[]" multiple/>
+
             </div>
         )
     }

@@ -31,13 +31,19 @@ abstract class DirectoryObject {
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="AccessToken", inversedBy="bearers", indexBy="token")
-     * @ORM\JoinTable(name="access_token_mapping")
+     * @ORM\OneToMany(targetEntity="AbstractPermission", mappedBy="bearer")
      */
-    private $accessTokens;
+    private $permissions;
+
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="DirectoryGroup", inversedBy="members")
+     */
+    private $groups;
 
     public function __construct() {
-        $this->accessTokens = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     /**
@@ -50,14 +56,47 @@ abstract class DirectoryObject {
     /**
      * @return Collection
      */
-    public function getAccessTokens(): Collection {
-        return $this->accessTokens;
+    public function getPermissions(): Collection {
+        return $this->permissions;
     }
 
     /**
-     * @param AccessToken $accessTokens
+     * @return Collection
      */
-    public function addAccessTokens(AccessToken $accessTokens): void {
-        $this->accessTokens = $this->getAccessTokens()->add($accessTokens);
+    public function getGroups(): Collection {
+        return $this->groups;
     }
+
+    public function joinGroups(DirectoryGroup $group): DirectoryObject {
+        // Need to detect circular reference
+        if (!$this->groups->contains($group)) {
+            $this->groups->add($group);
+            $group->getMember()->add($this);
+        }
+        return $this;
+    }
+
+    public function getEffectiveGroups($rtn = []): Collection {
+        foreach ($this->getGroups() as $parent) {
+            /* @var DirectoryObject $parent */
+            if (!in_array($parent, $rtn)) {
+                $rtn[] = $parent;
+                if (!$parent->getGroups()->isEmpty()) {
+                    $rtn = $parent->getEffectiveGroups($rtn)->toArray();
+                }
+            }
+        }
+        return new ArrayCollection($rtn);
+    }
+
+    public function getEffectivePermissions() : Collection {
+        $rtn = $this->getPermissions()->toArray();
+        foreach ($this->getEffectiveGroups() as $group) {
+            /* @var \App\Entity\Base\Directory\DirectoryObject $group */
+            $rtn = array_merge($rtn, $group->getPermissions()->toArray());
+        }
+        return new ArrayCollection($rtn);
+    }
+
+    abstract function getDOName(): string;
 }

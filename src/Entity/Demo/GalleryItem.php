@@ -8,7 +8,7 @@
 
 namespace App\Entity\Demo;
 
-use App\Entity\Base\Directory\User;
+use App\Entity\Base\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,7 +35,7 @@ class GalleryItem {
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\Base\Directory\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Base\User")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
      */
     private $owner;
@@ -59,14 +59,14 @@ class GalleryItem {
     private $content;
 
     /**
-     * @var GalleryAsset
-     * @ORM\OneToOne(targetEntity="GalleryAsset", inversedBy="galleryItem", cascade={"remove"})
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="GalleryAsset", mappedBy="galleryItem", cascade={"remove"})
      */
-    private $asset;
+    private $assets;
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="App\Entity\Base\Directory\User")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Base\User")
      * @ORM\JoinTable(name="user_like_mapping",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="gallery_item_id", referencedColumnName="id")}
@@ -82,6 +82,7 @@ class GalleryItem {
 
     public function __construct() {
         $this->likes = new ArrayCollection();
+        $this->assets = new ArrayCollection();
     }
 
     /**
@@ -140,15 +141,10 @@ class GalleryItem {
     }
 
     /**
-     * @return GalleryAsset
+     * @return Collection
      */
-    public function getAsset(): GalleryAsset {
-        return $this->asset;
-    }
-
-    public function setAsset(GalleryAsset $asset): GalleryItem {
-        $this->asset = $asset;
-        return $this;
+    public function getAssets(): Collection {
+        return $this->assets;
     }
 
     /**

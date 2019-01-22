@@ -10,24 +10,12 @@ Encore
         "./assets/gallery/index.scss",
         "./assets/gallery/index.js"
     ])
-    .addEntry("base", [
-        "./assets/base.js",
-        "./assets/base.scss",
-        "./assets/share/form_helper.js"
-    ])
-    .createSharedEntry('vendor', [
-        'jquery',
-        'bootstrap',
-        'babel-polyfill',
-        '@fortawesome/fontawesome-free/css/all.css',
-        'datatables.net-bs4/css/dataTables.bootstrap4.css',
-        'datatables.net-buttons-bs4/css/buttons.bootstrap4.css',
-        'datatables.net-select-bs4/css/select.bootstrap4.css',
-    ])
+    .createSharedEntry('base', "./assets/base.js")
     .enableSourceMaps(!Encore.isProduction())
     .enableSassLoader()
     .autoProvidejQuery()
     .enableReactPreset()
+    .enableSingleRuntimeChunk()
     // uncomment to create hashed filenames (e.g. app.abc123.css)
     // .enableVersioning(Encore.isProduction())
 

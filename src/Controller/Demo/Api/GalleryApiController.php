@@ -8,10 +8,9 @@
 
 namespace App\Controller\Demo\Api;
 
-use App\Entity\Base\Directory\User;
+use App\Entity\Base\User;
 use App\Entity\Demo\GalleryAsset;
 use App\Entity\Demo\GalleryItem;
-use Intervention\Image\Constraint;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -20,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Intervention\Image\ImageManagerStatic as Image;
 class GalleryApiController extends AbstractController {
     /**
      * @Route("/api/gallery/gallery-items", name="api_gallery_get_gallery_items", methods={"GET"})
@@ -76,15 +74,19 @@ class GalleryApiController extends AbstractController {
     }
 
     private function normalizeGalleryItem(GalleryItem $galleryItem): array {
+        $assets = $galleryItem->getAssets()->map(function (GalleryAsset $asset) {
+            return $this->generateUrl("api_gallery_get_gallery_asset", [
+                "id" => $asset->getId()
+            ]);
+        })->toArray();
         return [
             "id" => $galleryItem->getId(),
             "header" => $galleryItem->getHeader(),
             "content" => $galleryItem->getContent(),
-            "asset" => $this->generateUrl("api_gallery_get_gallery_asset", [
-                "id" => $galleryItem->getAsset()->getId()
-            ]),
+            "owner" => $galleryItem->getOwner() ? $galleryItem->getOwner()->getFullName() : null,
+            "assets" => $assets,
             "thumbnail" => $this->generateUrl("api_gallery_get_gallery_asset", [
-                "id" => $galleryItem->getAsset()->getId(),
+                "id" => $galleryItem->getAssets()->first()->getId(),
                 "thumbnail" => true
             ]),
             "likes" => $galleryItem->getLikes()->count(),
@@ -103,18 +105,22 @@ class GalleryApiController extends AbstractController {
         $files = $request->files->all();
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
+        $gItem = new GalleryItem();
+        $gItem->setHeader($photoName);
+        if ($user instanceof User) {
+            $gItem->setOwner($user);
+        }
+        if (empty($files)) {
+            // Need to report why cannot upload
+            throw new \Exception("Unable to read uploaded files");
+        }
         foreach ($files as $file) {
             /* @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-            $gItem = new GalleryItem();
-            $gItem->setHeader($photoName);
-            if ($user instanceof User) {
-                $gItem->setOwner($user);
-            }
             $gAsset = GalleryAsset::createFromImage($file->getRealPath(), $bag->get("assets_path"));
-            $gItem->setAsset($gAsset);
-            $em->persist($gItem);
+            $gAsset->setGalleryItem($gItem);
             $em->persist($gAsset);
         }
+        $em->persist($gItem);
         $em->flush();
         return new JsonResponse([
             "status" => "success"

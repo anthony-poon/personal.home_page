@@ -3,7 +3,7 @@
 namespace App\Controller\Base;
 
 use App\Entity\Base\Directory\DirectoryGroup;
-use App\Entity\Base\Directory\User;
+use App\Entity\Base\User;
 use App\FormType\Base\UserForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;

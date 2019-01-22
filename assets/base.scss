@@ -122,6 +122,10 @@ html {
     }
 }
 
+.hoverable {
+    cursor: pointer;
+}
+
 .btn-rd {
     @extend .p-1;
     @extend .rounded-circle;
@@ -129,20 +133,39 @@ html {
     height: 2.75rem;
 }
 
+.btn-like-bar {
+    display: flex;
+    align-items: center;
+    .btn-like:first-of-type {
+        margin-left: -8px;
+    }
+    .btn-like:last-of-type {
+        margin-right: -8px;
+    }
+}
+
 .btn-like {
     transition: color 0.4s, background-color 0.4s;
     cursor: pointer;
+    padding: 4px 12px 4px 12px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.btn-like.text-default:hover, .btn-like.text-secondary:hover {
+.btn-like.disabled {
+    cursor: initial;
+}
+
+.btn-like.text-default:hover:not(.disabled), .btn-like.text-secondary:hover:not(.disabled) {
     color: $primary !important;;
 }
 
-.btn-like.text-danger:hover {
+.btn-like.text-danger:hover:not(.disabled) {
     color: $secondary;
 }
 
-.btn-like.text-primary:hover {
+.btn-like.text-primary:hover:not(.disabled) {
     color: $secondary !important;
 }
 
@@ -152,6 +175,11 @@ a.btn-like {
 
 a.btn-like:hover {
     text-decoration: none;
+}
+
+.loading-spinner {
+    height: 1rem;
+    @include loading-spinner($primary);
 }
 
 .dataTables_wrapper.dt-bootstrap4 {

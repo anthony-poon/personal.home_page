@@ -1,1 +1,0 @@
-This is an template used for building web applications. It is build using on Symfony 4 framework. It has basic layout and user management interface.

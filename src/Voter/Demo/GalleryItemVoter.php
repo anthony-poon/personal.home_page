@@ -8,7 +8,7 @@
 
 namespace App\Voter\Demo;
 
-use App\Entity\Base\Directory\User;
+use App\Entity\Base\User;
 use App\Entity\Demo\GalleryAsset;
 use App\Entity\Demo\GalleryItem;
 use Doctrine\ORM\EntityManagerInterface;
@@ -65,7 +65,7 @@ class GalleryItemVoter extends Voter {
                         /* @var \App\Entity\Demo\GalleryItem $subject */
                         return $isAdmin || ($isLoggedIn && $subject->getOwner() === $user);
                     case GalleryItem::LIKE_ACCESS:
-                        return $user instanceof User && $subject->getOwner() !== $user;
+                        return $user instanceof User;
                     default:
                         return false;
                 }

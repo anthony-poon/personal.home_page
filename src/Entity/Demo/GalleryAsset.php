@@ -21,7 +21,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 class GalleryAsset extends Asset{
     /**
      * @var GalleryItem
-     * @ORM\OneToOne(targetEntity="GalleryItem", mappedBy="asset")
+     * @ORM\ManyToOne(targetEntity="GalleryItem", inversedBy="assets")
      */
     private $galleryItem;
 
@@ -42,6 +42,15 @@ class GalleryAsset extends Asset{
      */
     public function getGalleryItem(): GalleryItem {
         return $this->galleryItem;
+    }
+
+    /**
+     * @param GalleryItem $galleryItem
+     * @return GalleryAsset
+     */
+    public function setGalleryItem(GalleryItem $galleryItem): GalleryAsset {
+        $this->galleryItem = $galleryItem;
+        return $this;
     }
 
     /**
@@ -85,10 +94,11 @@ class GalleryAsset extends Asset{
         }
         $gAsset = new GalleryAsset();
         $img = Image::make($src);
+        $exif = $img->exif();
         $name = md5(uniqid()).".png";
         $img->save("$dstFolder/$name");
         $gAsset->setAssetPath($name);
-        $gAsset->setExif($img->exif());
+        $gAsset->setExif($exif);
         $gAsset->setMimeType($img->mime());
         $img->resize(null, 250, function(Constraint $constraint) {
             $constraint->aspectRatio();

@@ -2,7 +2,7 @@
 
 namespace App\Controller\Base;
 
-use App\Entity\Base\Directory\User;
+use App\Entity\Base\User;
 use App\FormType\Base\UserForm;
 use App\Service\BaseTemplateHelper;
 use App\Service\EntityTableHelper;

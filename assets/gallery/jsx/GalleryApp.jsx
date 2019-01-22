@@ -6,11 +6,11 @@ import GalleryUpload from "./GalleryUpload";
 import GalleryModal from  "./GalleryModal";
 import GalleryViewer from "./GalleryViewer";
 import GalleryUploadForm from "./GalleryUploadForm";
-
 export default class GalleryApp extends React.Component {
     constructor(props) {
         super(props);
         this.storege = {};
+        this.obsevers = [];
         this.state = {
             uploadFiles: [],
             items: [],
@@ -22,7 +22,7 @@ export default class GalleryApp extends React.Component {
         };
     }
 
-    modalClose() {
+    async modalClose() {
         history.replaceState(null, null, "/gallery");
         this.setState({
             modal: {
@@ -30,6 +30,10 @@ export default class GalleryApp extends React.Component {
                 content: null
             }
         });
+        let success = await this.queryData();
+        if (success) {
+            this.renderGalleryItems();
+        }
     }
 
     triggerUpload(files) {
@@ -39,13 +43,9 @@ export default class GalleryApp extends React.Component {
                     isVisible: true,
                     content: (
                         <GalleryUploadForm
+                            ajaxUrl={this.props.ajaxUrl}
                             uploadFiles={files}
-                            onClose={() => {
-                                this.modalClose()
-                            }}
-                            onSubmit={(payload) => {
-                                this.submitUpload(payload);
-                            }}
+                            modalClose={this.modalClose.bind(this)}
                         />
                     )
                 }
@@ -53,63 +53,7 @@ export default class GalleryApp extends React.Component {
         }
     }
 
-    async submitUpload(payload) {
-        let data = new FormData();
-        data.append("name", payload.name);
-        $.each(payload.uploadFiles, (index, value) => {
-            data.append("img_" + index, value);
-        });
-        let config = {
-            onUploadProgress: payload.onProgress
-        };
-        let response = await axios.post(this.props.ajaxUrl, data, config);
-        if (200 === response.status) {
-            payload.onFinish();
-            window.setTimeout(() => {
-                this.setState({
-                    modal: {
-                        isVisible: false,
-                        content: (
-                            null
-                        )
-                    }
-                });
-            }, 2000);
-            this.populateGallery();
-        } else {
-            console.error(response);
-        }
-    }
-
-    async deleteItem(payload) {
-        let id = payload.id;
-        let response = await axios.delete(this.props.ajaxUrl + "/" + id);
-        if (200 === response.status) {
-            this.populateGallery();
-        } else {
-            console.error(response);
-        }
-    }
-
-    async likeItem(payload) {
-        let id = payload.id;
-        let response = await axios.post(this.props.ajaxUrl + "/" + id + "/likes");
-        if (200 === response.status) {
-        } else {
-            console.error(response);
-        }
-    }
-
-    async unlikeItem(payload) {
-        let id = payload.id;
-        let response = await axios.delete(this.props.ajaxUrl + "/" + id + "/likes");
-        if (200 === response.status) {
-        } else {
-            console.error(response);
-        }
-    }
-
-    expandItem(id) {
+    expandItem (id) {
         let item = this.storege[id];
         if (item) {
             history.pushState({
@@ -123,10 +67,14 @@ export default class GalleryApp extends React.Component {
                             id={item.id}
                             header={item.header}
                             content={item.content}
-                            asset={item.asset}
-                            onClose={() => {
-                                this.modalClose()
-                            }}
+                            assets={item.assets}
+                            owner={item.owner}
+                            canDelete={item.canDelete}
+                            isLiked={item.isLiked}
+                            isLoggedIn={this.props.isLoggedIn}
+                            signInLink={this.props.signInLink}
+                            ajaxUrl={this.props.ajaxUrl}
+                            modalClose={this.modalClose.bind(this)}
                         />
                     )
                 }
@@ -134,41 +82,37 @@ export default class GalleryApp extends React.Component {
         }
     };
 
-    async populateGallery() {
-        return axios.get(this.props.ajaxUrl).then((res) => {
-            if (200 === res.status) {
-                let items = $.map(res.data, (v, k) => {
-                    this.storege[v.id] = v;
-                    return (
-                        <div className={"gallery-item-wrapper"} key={v.id}>
-                            <GalleryItem
-                                id={v.id}
-                                header={v.header}
-                                content={v.content}
-                                thumbnail={v.thumbnail}
-                                isLiked={v.isLiked}
-                                isLoggedIn={this.props.isLoggedIn}
-                                signInLink={this.props.signInLink}
-                                onExpand={(payload) => {
-                                    this.expandItem(payload)
-                                }}
-                                onDelete={(payload) => {
-                                    this.deleteItem(payload)
-                                }}
-                                onLike={(payload) => {
-                                    this.likeItem(payload)
-                                }}
-                                onUnlike={(payload) => {
-                                    this.unlikeItem(payload)
-                                }}
-                            />
-                        </div>
-                    )});
-                this.setState({
-                    items: items,
-                });
-            }
-            return res;
+    async queryData() {
+        console.log("query");
+        let response = await axios.get(this.props.ajaxUrl);
+        if (200 === response.status) {
+            $.map(response.data, (v, k) => {
+                this.storege[v.id] = v;
+            });
+        } else {
+            console.error(response);
+        }
+        return true;
+    }
+
+     renderGalleryItems() {
+         console.log("render");
+        let items = $.map(this.storege, (value, key) => {
+            return (
+                <div className={"gallery-item-wrapper"} key={key}>
+                    <GalleryItem
+                        id={value.id}
+                        header={value.header}
+                        content={value.content}
+                        thumbnail={value.thumbnail}
+                        owner={value.owner}
+                        onClick={this.expandItem.bind(this)}
+                    />
+                </div>
+            )
+        });
+        this.setState({
+            items: items,
         });
     }
 
@@ -186,8 +130,8 @@ export default class GalleryApp extends React.Component {
                 });
             }
         });
-        let response = await this.populateGallery();
-        if (200 === response.status){
+        let success = await this.queryData();
+        if (success) {
             let url = window.location.pathname;
             let reg = /^\/gallery\/?(\d+)(.*)$/
             let match = reg.exec(url);
@@ -195,9 +139,9 @@ export default class GalleryApp extends React.Component {
                 let id = parseInt(match[1]);
                 history.replaceState(null, null, "/gallery");
                 this.expandItem(id);
+            } else {
+                this.renderGalleryItems();
             }
-        } else {
-            console.error(response)
         }
     };
 
@@ -211,12 +155,10 @@ export default class GalleryApp extends React.Component {
                 </div>
                 <div className={"gallery-app__upload-button"}>
                     <GalleryUpload
-                        onTrigger={(files) => {
-                            this.triggerUpload(files)
-                        }}
+                        onTrigger={this.triggerUpload.bind(this)}
                     />
                 </div>
-                <div className={this.state.modal.isVisible ? "gallery-app__modal container-fluid p-0" : "gallery-app__modal container-fluid p-0 d-none"}>
+                <div className={this.state.modal.isVisible ? "gallery-app__modal" : "gallery-app__modal d-none"}>
                     <GalleryModal
                         content={this.state.modal.content}
                         isVisible={this.state.modal.isVisible}

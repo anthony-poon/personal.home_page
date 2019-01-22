@@ -10,28 +10,37 @@
         .gallery-item {
             @extend .card;
             @extend .mb-3;
-            .gallery-img-container {
+            .gallery-item__img-container {
                 @extend .card-img-top;
-                @extend .bg-dark;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-size: cover;
+                background-color: rgba(128, 128, 128, 1);
                 position: relative;
-                .gallery-img {
+                height: 250px;
+                .gallery-item__img {
                     object-fit: cover;
                     width: 100%;
-                    height: 250px;
+                    height: 100%;
+                }
+                .gallery-item__img-loader {
+                    margin: auto;
+                    padding: 0 30%;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    width: 100%;
+                    max-height: 100%;
                 }
             }
-            .gallery-body {
+            .gallery-item__body {
                 @extend .card-body;
-                .gallery-header {
+                .gallery-item__header {
                     @extend .h6;
-                    @extend .text-black-50;
                     @extend .text-monospace;
                 }
+                .gallery-item__content {
 
+                }
             }
         }
     }
@@ -50,58 +59,81 @@
         .gallery-modal {
             width: 100vw;
             height: 100vh;
-            background-color: rgba(0, 0, 0, 0.8);
-            .gallery-viewer{
-                .gallery-viewer__img-wrapper {
-                    img {
-                        max-width: 100%;
-                        object-fit: contain;
-                    }
+            background-color: rgba(60, 60, 60, 0.8);
+            .gallery-nav {
+                width: 100%;
+                position: sticky;
+                border-bottom: 1px rgba(0, 0, 0, 0.1) solid;
+                background-color: white;
+                .gallery-nav__progress-bar {
+                    position: absolute;
+                    bottom: -1px;
+                    height: 1px;
+                    background-color: $primary;
+                    transition: width 0.7s;
+                    left: 0;
                 }
+            }
+            .gallery-viewer{
+                background-color: white;
+                display: flex;
+                height: 100vh;
+                flex-direction: column;
                 .gallery-viewer__body {
-                    background-color: white;
-                    .gallery-viewer__header {
-                        @extend .text-primary;
-                    }
-                    .gallery-viewer__content {
-                        overflow-y: auto;
-                    }
-                    .gallery-viewer__btn-bar {
-                        .btn-like {
-                            @extend .p-1;
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+                    .gallery-viewer__image {
+                        flex-grow: 1;
+                        background-color: rgba(0, 0, 0, 0.1);
+                        position: relative;
+                        img {
+                            position: absolute;
+                            top: 0;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            margin: auto;
+                            max-width: 100%;
+                            max-height: 100%;
+                            object-fit: contain;
+                        }
+                        img.loader {
+                            padding: 0 40vw;
                         }
                     }
+                    .gallery-viewer__content {
+                        background-color: white;
+                    }
                 }
+
             }
             .gallery-upload-form {
                 background-color: white;
-                overflow-y: auto;
-                .gallery-upload-form__header {
-                    .gallery-upload-form__spinner {
-                        @include loading-spinner($primary);
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                .gallery-upload-form__body {
+                    flex-grow: 1;
+                    @extend .my-5;
+                    @extend .px-3;
+                    .gallery-upload-form__header {
+                        position: sticky;
+                        border-bottom: 1px rgba(0, 0, 0, 0.1) solid;
                     }
-                    position: sticky;
-                    border-bottom: 1px rgba(0, 0, 0, 0.1) solid;
-                    .gallery-upload-form__progress-bar {
-                        position: absolute;
-                        bottom: -1px;
-                        height: 1px;
-                        background-color: $primary;
-                        transition: width 0.7s;
-                    }
-
-                }
-                .gallery-upload-form__img-wrapper {
-                    @extend .p-1;
-                    .gallery-upload-form__img-outline {
-                        @extend .img-thumbnail;
-                        .gallery-upload-form__img{
-                            background-repeat: no-repeat;
-                            background-size: cover;
-                            background-position: center;
+                    .gallery-upload-form__img-wrapper {
+                        @extend .p-0;
+                        .gallery-upload-form__img-outline {
+                            @extend .m-1;
+                            .gallery-upload-form__img{
+                                background-repeat: no-repeat;
+                                background-size: cover;
+                                background-position: center;
+                            }
                         }
                     }
                 }
+
             }
         }
     }

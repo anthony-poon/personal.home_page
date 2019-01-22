@@ -6,8 +6,11 @@
  * Time: 5:09 PM
  */
 
-namespace App\Entity\Base\Directory;
+namespace App\Entity\Base;
 
+use App\Entity\Base\Directory\AbstractPermission;
+use App\Entity\Base\Directory\DirectoryObject;
+use App\Entity\Base\Directory\SitePermission;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,7 +23,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @UniqueEntity("username", message="Username is taken already")
  * @UniqueEntity("email", message="Email is registered already")
  */
-class User extends DirectoryMember implements UserInterface, \Serializable {
+class User extends DirectoryObject implements UserInterface, \Serializable {
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank()
@@ -83,8 +86,10 @@ class User extends DirectoryMember implements UserInterface, \Serializable {
      * @return array
      */
     public function getRoles(): array {
-    	return $this->getEffectiveAccessTokens()->map(function(AccessToken $token){
-            return $token->getToken();
+    	return $this->getEffectivePermissions()->filter(function(AbstractPermission $permission) {
+    	    return $permission instanceof SitePermission;
+        })->map(function (SitePermission $permission) {
+            return $permission->getRole();
         })->toArray();
     }
 
@@ -108,7 +113,7 @@ class User extends DirectoryMember implements UserInterface, \Serializable {
      * @return string|null The salt
      */
     public function getSalt() {
-        return Null;
+        return null;
     }
 
     /**
@@ -190,4 +195,10 @@ class User extends DirectoryMember implements UserInterface, \Serializable {
         $this->fullName = $fullName;
         return $this;
     }
+
+    function getDOName(): string {
+        return $this->getUsername();
+    }
+
+
 }
