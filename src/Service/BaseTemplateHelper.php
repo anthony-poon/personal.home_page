@@ -12,10 +12,7 @@ class BaseTemplateHelper {
     private $navMenu = [];
     private $layout;
     private $title = "Web Application";
-    private $jsParam = [];
 	private $user = null;
-	private $css = [];
-	private $js = [];
 	private $role = [];
     public function __construct(RouterInterface $router, TokenStorageInterface $tokenStorage, ParameterBagInterface $params) {
         $this->sideMenuStyle = $params->get("side_menu_style");
@@ -128,47 +125,6 @@ class BaseTemplateHelper {
         $this->title = $title;
         return $this;
     }
-
-    /**
-     * @return array
-     */
-    public function getJsParam(): array {
-        return $this->jsParam;
-    }
-
-    /**
-     * @param array $jsParam
-     * @return BaseTemplateHelper
-     */
-    public function addJsParam(array $jsParam): BaseTemplateHelper {
-        $this->jsParam = array_merge($jsParam, $this->jsParam);
-        return $this;
-    }
-
-    public function addJs($js): BaseTemplateHelper {
-    	$this->js[] = $js;
-    	return $this;
-	}
-
-	public function addCss($css): BaseTemplateHelper {
-    	$this->css[] = $css;
-    	return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getCss(): array {
-		return $this->css;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getJs(): array {
-		return $this->js;
-	}
-
     /**
      * @return mixed
      */

@@ -11,6 +11,7 @@ Encore
         "./assets/gallery/index.js"
     ])
     .createSharedEntry('base', "./assets/base.js")
+    .enableVersioning()
     .enableSourceMaps(!Encore.isProduction())
     .enableSassLoader()
     .autoProvidejQuery()

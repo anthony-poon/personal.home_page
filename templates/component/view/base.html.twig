@@ -7,11 +7,11 @@
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        {#<link rel="stylesheet" href="{{ asset("build/vendor.css") }}">#}
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
         <link rel="stylesheet" href="{{ asset("build/base.css") }}">
-        {% for css in template_helper.getCss %}
-            <link rel="stylesheet" href="{{ asset(css) }}">
-        {% endfor %}
         {% block css %}{% endblock %}
     </head>
     <body>
@@ -50,21 +50,10 @@
             </div>
         </div>
         <div id="load-spinner" class="position-fixed fixed-bottom">
-
         </div>
         {% block modal %}{% endblock %}
-        <script>
-            window.Param = {};
-            {% for k, p in template_helper.jsParam %}
-                window.Param["{{ k }}"] = "{{ p }}";
-            {% endfor %}
-        </script>
         <script src="{{ asset("build/runtime.js") }}"></script>
-        {#<script src="{{ asset("build/vendor.js") }}"></script>#}
         <script src="{{ asset("build/base.js") }}"></script>
-        {% for js in template_helper.getJs %}
-            <script src="{{ asset(js) }}"></script>
-        {% endfor %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>
