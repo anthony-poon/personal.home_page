@@ -6,10 +6,11 @@ import GalleryUpload from "./GalleryUpload";
 import GalleryModal from  "./GalleryModal";
 import GalleryViewer from "./GalleryViewer";
 import GalleryUploadForm from "./GalleryUploadForm";
+import _ from "underscore";
 export default class GalleryApp extends React.Component {
     constructor(props) {
         super(props);
-        this.storege = {};
+        this.storege = [];
         this.obsevers = [];
         this.state = {
             uploadFiles: [],
@@ -54,7 +55,9 @@ export default class GalleryApp extends React.Component {
     }
 
     expandItem (id) {
-        let item = this.storege[id];
+        let item = _.find(this.storege, (v) => {
+            return v.id === id;
+        });
         if (item) {
             history.pushState({
                 id: id
@@ -87,7 +90,7 @@ export default class GalleryApp extends React.Component {
         let response = await axios.get(this.props.ajaxUrl);
         if (200 === response.status) {
             $.map(response.data, (v, k) => {
-                this.storege[v.id] = v;
+                this.storege.push(v);
             });
         } else {
             console.error(response);
