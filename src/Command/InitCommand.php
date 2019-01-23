@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Base\Directory\DirectoryGroup;
-use App\Entity\Base\Directory\SitePermission;
+use App\Entity\Base\SitePermission;
 use App\Entity\Base\User;
 use App\Entity\Base\UserGroup;
 use App\Entity\Demo\GalleryAsset;

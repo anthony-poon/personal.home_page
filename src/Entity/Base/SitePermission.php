@@ -8,6 +8,7 @@
 
 namespace App\Entity\Base;
 
+use App\Entity\Base\Directory\AbstractPermission;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
