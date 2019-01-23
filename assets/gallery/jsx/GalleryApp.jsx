@@ -87,6 +87,7 @@ export default class GalleryApp extends React.Component {
 
     async queryData() {
         console.log("query");
+        this.storege = [];
         let response = await axios.get(this.props.ajaxUrl);
         if (200 === response.status) {
             $.map(response.data, (v, k) => {
