@@ -16,10 +16,18 @@ export default class GalleryViewer extends React.Component{
                 content: this.props.isLiked ? <FontAwesomeIcon icon={fasHeart}/> : <FontAwesomeIcon icon={farHeart}/>,
                 onClick: () => { return this.onLikeBtnClick() }
             },
-            shareBtn: {
+            shareBtn: (navigator.share) ? ({
                 content: <FontAwesomeIcon icon={faShareAlt}/>,
-                onClick: () => { console.log("clicked") }
-            },
+                onClick: () => {
+                    navigator.share({
+                        title: "Anthony Poon's Gallery",
+                        text: this.props.title ? this.props.title : "Untitled",
+                        url: window.location.href ,
+                    }).catch((err) => {
+                        console.error(err);
+                    })
+                }
+            }) : null,
             imageIndex: 0,
             imageStack: null,
             imageSrc: null,
@@ -166,10 +174,12 @@ export default class GalleryViewer extends React.Component{
                                                     onClick={this.state.likeBtn.onClick}
                                                     content={this.state.likeBtn.content}
                                                 />
-                                                <BtnLikeText
-                                                    onClick={this.state.shareBtn.onClick}
-                                                    content={this.state.shareBtn.content}
-                                                />
+                                                {(navigator.share) ? (
+                                                    <BtnLikeText
+                                                        onClick={this.state.shareBtn.onClick}
+                                                        content={this.state.shareBtn.content}
+                                                    />
+                                                ) : null}
                                                 {this.props.canDelete ?
                                                     (<BtnLikeText
                                                         onClick={this.onDelete.bind(this)}
