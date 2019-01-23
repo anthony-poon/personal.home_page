@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 class GalleryApiController extends AbstractController {
+    const MAX_UPLOAD_COUNT = 12;
     /**
      * @Route("/api/gallery/gallery-items", name="api_gallery_get_gallery_items", methods={"GET"})
      * @return Response
@@ -32,6 +33,8 @@ class GalleryApiController extends AbstractController {
             /* @var GalleryItem $gItem */
             $rtn[] = $this->normalizeGalleryItem($gItem);
         }
+        // Flip the array so latest come first
+        $rtn = array_reverse($rtn);
         return new JsonResponse($rtn);
     }
 
@@ -113,6 +116,17 @@ class GalleryApiController extends AbstractController {
         if (empty($files)) {
             // Need to report why cannot upload
             throw new \Exception("Unable to read uploaded files");
+        }
+
+        if (count($files) > self::MAX_UPLOAD_COUNT) {
+            throw new \Exception("Number of files uploaded exceeded maximum: ".self::MAX_UPLOAD_COUNT);
+        }
+        foreach ($files as $file) {
+            /* @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+            if (!preg_match("/^image\//", $file->getMimeType())) {
+                throw new \Exception("Uploaded file is not a valid mime type. Current: ".$file->getMimeType());
+            }
+
         }
         foreach ($files as $file) {
             /* @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */

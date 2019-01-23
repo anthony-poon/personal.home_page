@@ -78,22 +78,24 @@ export default class GalleryViewer extends React.Component{
     }
 
     cycleImages() {
-        this.setState((prevState) => {
-            if (prevState.imageIndex + 1 >= this.props.assets.length) {
-                return {
-                    isLoaded: false,
-                    imageIndex: 0,
-                    imageSrc: this.props.assets[0]
-                };
-            } else {
-                console.log(prevState.imageIndex + 1);
-                return {
-                    isLoaded: false,
-                    imageIndex: prevState.imageIndex + 1,
-                    imageSrc: this.props.assets[prevState.imageIndex + 1]
-                };
-            }
-        })
+        if (this.props.assets.length > 1) {
+            this.setState((prevState) => {
+                if (prevState.imageIndex + 1 >= this.props.assets.length) {
+                    return {
+                        isLoaded: false,
+                        imageIndex: 0,
+                        imageSrc: this.props.assets[0]
+                    };
+                } else {
+                    console.log(prevState.imageIndex + 1);
+                    return {
+                        isLoaded: false,
+                        imageIndex: prevState.imageIndex + 1,
+                        imageSrc: this.props.assets[prevState.imageIndex + 1]
+                    };
+                }
+            })
+        }
     }
 
     onLoadingBarLoaded() {
@@ -179,8 +181,13 @@ export default class GalleryViewer extends React.Component{
                                     </div>
                                 </div>
                                 <div className={"row"}>
+                                    <p className={"col text-secondary"}>
+                                        {this.props.content}
+                                    </p>
+                                </div>
+                                <div className={"row"}>
                                     <div className={"col text-secondary"}>
-                                        <small><i>Creator: {this.props.owner ? this.props.owner : "Anonymous"}</i></small>
+                                        <small><i>Posted By: {this.props.owner ? this.props.owner : "Anonymous"}</i></small>
                                     </div>
                                 </div>
                             </div>

@@ -22,10 +22,11 @@ class InitCommand extends Command {
     private $em;
     private $passwordEncoder;
     private const GALLERY_ITEM_COUNT = 15;
-    private const GALLERY_ASSET_MAX_WIDTH = 1200;
-    private const GALLERY_ASSET_MIN_WIDTH = 200;
-    private const GALLERY_ASSET_MAX_HEIGHT = 900;
-    private const GALLERY_ASSET_MIN_HEIGHT = 200;
+    private const GALLERY_PIC_PER_ITEM_COUNT = 5;
+    private const GALLERY_ASSET_MAX_WIDTH = 4000;
+    private const GALLERY_ASSET_MIN_WIDTH = 600;
+//    private const GALLERY_ASSET_MAX_HEIGHT = 2250;
+//    private const GALLERY_ASSET_MIN_HEIGHT = 350;
     /**
      * @var OutputInterface
      */
@@ -143,12 +144,28 @@ class InitCommand extends Command {
      */
     private function initAsset(): GalleryAsset {
         $width = random_int(self::GALLERY_ASSET_MIN_WIDTH, self::GALLERY_ASSET_MAX_WIDTH);
-        $height = random_int(self::GALLERY_ASSET_MIN_HEIGHT, self::GALLERY_ASSET_MAX_HEIGHT);
         $retry = 0;
         $isSuccess = false;
         $gAsset = null;
         while (!$isSuccess && $retry < 5) {
             try {
+                $landscaped = rand(0, 1);
+                $is4To3 = rand(0, 1); // Either 16 : 9 or 4 : 3
+                if ($landscaped) {
+                    // Landscaped
+                    if ($is4To3) {
+                        $height = $width / 4 * 3;
+                    } else {
+                        $height = $width / 16 * 9;
+                    }
+                } else {
+                    // Portrait
+                    if ($is4To3) {
+                        $height = $width / 3 * 4;
+                    } else {
+                        $height = $width / 9 * 16;
+                    }
+                }
                 $url = "https://picsum.photos/$width/$height?random";
                 $gAsset = GalleryAsset::createFromImage($url, $this->folder);
                 $this->output->writeln("Generated ".$gAsset->getAssetPath());
@@ -157,9 +174,9 @@ class InitCommand extends Command {
                 $retry += 1;
                 $this->output->writeln("Retry $retry... ");
             }
-            if ($gAsset === null) {
-                throw new \Exception("Unable to download image after $retry retry");
-            }
+        }
+        if ($gAsset === null) {
+            throw new \Exception("Unable to download image after $retry retry");
         }
         return $gAsset;
     }
@@ -173,13 +190,15 @@ class InitCommand extends Command {
         if (!$this->lorem) {
             $this->lorem = new LoremIpsum();
         }
-        $galleryItem->setHeader(ucwords($this->lorem->words(2)));
-        $galleryItem->setContent($this->lorem ->paragraphs(1));
 
-        $asset = $this->initAsset();
-        $asset->setGalleryItem($galleryItem);
+        $galleryItem->setHeader(ucwords($this->lorem->words(2)));
+        $galleryItem->setContent("Placeholder generated from https://picsum.photos.");
+        for ($i = 0; $i < self::GALLERY_PIC_PER_ITEM_COUNT; $i ++) {
+            $asset = $this->initAsset();
+            $asset->setGalleryItem($galleryItem);
+            $this->em->persist($asset);
+        }
         $this->em->persist($galleryItem);
-        $this->em->persist($asset);
         return $galleryItem;
     }
 }

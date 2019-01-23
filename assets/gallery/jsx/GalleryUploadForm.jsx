@@ -97,7 +97,7 @@ export default class GalleryUploadForm extends React.Component {
                             <div className="row">
                                 <div className="col">
                                     <div className={"form-group"}>
-                                        <label class={"text-secondary"}>Enter a title for your collection:</label>
+                                        <label className={"text-secondary"}>Enter a title for your collection:</label>
                                         <input name={"title"} type={"text"} className={"form-control form-control"} placeholder={"Untitled"} multiple={true}/>
                                     </div>
                                 </div>

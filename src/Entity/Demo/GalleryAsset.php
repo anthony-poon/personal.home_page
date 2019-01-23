@@ -19,6 +19,8 @@ use Intervention\Image\ImageManagerStatic as Image;
  * @ORM\Table()
  */
 class GalleryAsset extends Asset{
+    const MAX_ALLOWED_WIDTH = 3000;
+    CONST MAX_ALLOWED_HEIGHT = 3000;
     /**
      * @var GalleryItem
      * @ORM\ManyToOne(targetEntity="GalleryItem", inversedBy="assets")
@@ -93,17 +95,22 @@ class GalleryAsset extends Asset{
             throw new \Exception("Invalid destination folder.");
         }
         $gAsset = new GalleryAsset();
-        $img = Image::make($src);
+        $img = Image::make($src)->orientate();
+
         $exif = $img->exif();
         $name = md5(uniqid()).".png";
+        // Maximum 3000px x 3000 px on original.
+        $img->resize(self::MAX_ALLOWED_WIDTH, self::MAX_ALLOWED_HEIGHT, function (Constraint $constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
         $img->save("$dstFolder/$name");
         $gAsset->setAssetPath($name);
         $gAsset->setExif($exif);
         $gAsset->setMimeType($img->mime());
-        $img->resize(null, 250, function(Constraint $constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
+
+        // thumbnail fixed at 250 h, maximum 600 w
+        $img->fit(600, 250);
         $thumbName = md5(uniqid()).".png";
         $img->save("$dstFolder/$thumbName");
         $gAsset->setThumbnailPath($thumbName);
