@@ -1,5 +1,6 @@
 import React from 'react'
 import loadingBar from "../image/loading_bar.svg";
+import "intersection-observer";
 export default class GalleryItem extends React.Component{
     constructor(props) {
         super(props);
@@ -11,6 +12,7 @@ export default class GalleryItem extends React.Component{
     }
 
     componentDidMount() {
+
         let yOffset = this.myRef.current.getBoundingClientRect().y;
         let windowYOffset = window.scrollY + window.innerHeight;
         if (windowYOffset > yOffset) {
@@ -31,6 +33,7 @@ export default class GalleryItem extends React.Component{
             });
             observer.observe(this.myRef.current);
         }
+        console.log("loaded");
     }
 
     render() {
