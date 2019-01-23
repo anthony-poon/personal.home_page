@@ -55,7 +55,7 @@ export default class GalleryItem extends React.Component{
                     </div>
                     <div className={"gallery-item__content row"}>
                         <div className={"col text-secondary"}>
-                            <small><i>Creator: {this.props.owner ? this.props.owner : "Anonymous"}</i></small>
+                            <small><i>Posted By: {this.props.owner ? this.props.owner : "Anonymous"}</i></small>
                         </div>
                     </div>
                 </div>
