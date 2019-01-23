@@ -23,7 +23,7 @@ class InitCommand extends Command {
     private $passwordEncoder;
     private const GALLERY_ITEM_COUNT = 15;
     private const GALLERY_PIC_PER_ITEM_COUNT = 5;
-    private const GALLERY_ASSET_MAX_WIDTH = 4000;
+    private const GALLERY_ASSET_MAX_WIDTH = 2000;
     private const GALLERY_ASSET_MIN_WIDTH = 600;
 //    private const GALLERY_ASSET_MAX_HEIGHT = 2250;
 //    private const GALLERY_ASSET_MIN_HEIGHT = 350;
