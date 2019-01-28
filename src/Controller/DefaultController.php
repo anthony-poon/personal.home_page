@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Base;
+namespace App\Controller;
 
 use App\Service\BaseTemplateHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +11,7 @@ class DefaultController extends AbstractController {
      * @Route("/", name="home")
      */
     public function index(BaseTemplateHelper $template) {
+        $template->setTitle("Anthony Poon");
         return $this->render('render/index.html.twig');
     }
 

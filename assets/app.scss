@@ -1,4 +1,4 @@
-@import "./_var.scss";
+@import "./custom.scss";
 
 html {
     color: #505050;
@@ -175,11 +175,6 @@ a.btn-like {
 
 a.btn-like:hover {
     text-decoration: none;
-}
-
-.loading-spinner {
-    height: 1rem;
-    @include loading-spinner($primary);
 }
 
 .dataTables_wrapper.dt-bootstrap4 {

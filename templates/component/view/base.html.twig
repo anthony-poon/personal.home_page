@@ -11,8 +11,8 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
         <link rel="manifest" href="/site.webmanifest">
-        <link rel="stylesheet" href="{{ asset("build/base.css") }}">
-        {% block css %}{% endblock %}
+        <link rel="stylesheet" href="{{ asset("build/app.css") }}">
+        {% block stylesheets %}{% endblock %}
     </head>
     <body>
         {% if template_helper.getSideMenuStyle == "collapse" %}
@@ -53,7 +53,7 @@
         </div>
         {% block modal %}{% endblock %}
         <script src="{{ asset("build/runtime.js") }}"></script>
-        <script src="{{ asset("build/base.js") }}"></script>
+        <script src="{{ asset("build/app.js") }}"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
