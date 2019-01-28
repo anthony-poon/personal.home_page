@@ -43,7 +43,7 @@ export default class GalleryItem extends React.Component{
                     this.props.onClick(this.props.id)
                 }}>
                     <img className={this.state.isLoaded ? "gallery-item__img-loader invisible" : "gallery-item__img-loader visible"} src={loadingBar}/>
-                    <img className={"gallery-item__img"} src={this.state.isObserved ? this.props.thumbnail : null} onLoad={() => {
+                    <img className={this.state.isLoaded ? "gallery-item__img visible" : "gallery-item__img invisible"} src={this.state.isObserved ? this.props.thumbnail : null} onLoad={() => {
                         this.setState({
                             isLoaded: true
                         })
