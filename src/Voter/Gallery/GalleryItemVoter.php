@@ -6,11 +6,11 @@
  * Time: 12:28 PM
  */
 
-namespace App\Voter\Demo;
+namespace App\Voter\Gallery;
 
 use App\Entity\Base\User;
-use App\Entity\Demo\GalleryAsset;
-use App\Entity\Demo\GalleryItem;
+use App\Entity\Gallery\GalleryAsset;
+use App\Entity\Gallery\GalleryItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -34,7 +34,7 @@ class GalleryItemVoter extends Voter {
                         GalleryItem::LIKE_ACCESS
                     ]);
                 case GalleryAsset::class:
-                    /* @var $subject \App\Entity\Demo\GalleryAsset */
+                    /* @var $subject \App\Entity\Gallery\GalleryAsset */
                     return in_array($attribute, [
                         GalleryAsset::CREATE_ACCESS,
                         GalleryAsset::READ_ACCESS,
@@ -62,7 +62,7 @@ class GalleryItemVoter extends Voter {
                         return true;
                     case GalleryItem::UPDATE_ACCESS:
                     case GalleryItem::DELETE_ACCESS:
-                        /* @var \App\Entity\Demo\GalleryItem $subject */
+                        /* @var \App\Entity\Gallery\GalleryItem $subject */
                         return $isAdmin || ($isLoggedIn && $subject->getOwner() === $user);
                     case GalleryItem::LIKE_ACCESS:
                         return $user instanceof User;
@@ -77,7 +77,7 @@ class GalleryItemVoter extends Voter {
                         return true;
                     case GalleryAsset::UPDATE_ACCESS:
                     case GalleryAsset::DELETE_ACCESS:
-                    /* @var \App\Entity\Demo\GalleryAsset $subject */
+                    /* @var \App\Entity\Gallery\GalleryAsset $subject */
                         return $isAdmin || ($isLoggedIn && $subject->getGalleryItem()->getOwner() === $user);
                     default:
                         return false;

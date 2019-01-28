@@ -6,11 +6,11 @@
  * Time: 2:06 PM
  */
 
-namespace App\Controller\Demo\Api;
+namespace App\Controller\Gallery\Api;
 
 use App\Entity\Base\User;
-use App\Entity\Demo\GalleryAsset;
-use App\Entity\Demo\GalleryItem;
+use App\Entity\Gallery\GalleryAsset;
+use App\Entity\Gallery\GalleryItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -150,7 +150,7 @@ class GalleryApiController extends AbstractController {
         /* @var GalleryItem %gItem */
         $gItem = $repo->find($id);
         $this->isGranted(GalleryItem::DELETE_ACCESS, $gItem);
-        /* @var \App\Entity\Demo\GalleryAsset $gAsset */
+        /* @var \App\Entity\Gallery\GalleryAsset $gAsset */
         $gAsset = $gItem->getAsset();
         $em = $this->getDoctrine()->getManager();
         $em->remove($gItem);
@@ -168,7 +168,7 @@ class GalleryApiController extends AbstractController {
      */
     public function likeGalleryItem(int $id) {
         $repo = $this->getDoctrine()->getRepository(GalleryItem::class);
-        /* @var \App\Entity\Demo\GalleryItem $gItem */
+        /* @var \App\Entity\Gallery\GalleryItem $gItem */
         $gItem = $repo->find($id);
         $this->denyAccessUnlessGranted(GalleryItem::LIKE_ACCESS, $gItem);
         if (!$gItem->getLikes()->contains($this->getUser())) {
@@ -187,7 +187,7 @@ class GalleryApiController extends AbstractController {
      */
     public function unlikeGalleryItem(int $id) {
         $repo = $this->getDoctrine()->getRepository(GalleryItem::class);
-        /* @var \App\Entity\Demo\GalleryItem $gItem */
+        /* @var \App\Entity\Gallery\GalleryItem $gItem */
         $gItem = $repo->find($id);
         $this->denyAccessUnlessGranted(GalleryItem::LIKE_ACCESS, $gItem);
         if ($gItem->getLikes()->contains($this->getUser())) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Demo;
+namespace App\Controller\Gallery;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,6 +11,6 @@ class GalleryController extends AbstractController {
      * @Route("/gallery/{id}", requirements={"id"="\d+"})
      */
     public function index() {
-        return $this->render('render/demo/gallery/index.html.twig');
+        return $this->render('render/gallery/index.html.twig');
     }
 }

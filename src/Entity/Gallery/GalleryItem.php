@@ -6,7 +6,7 @@
  * Time: 12:20 PM
  */
 
-namespace App\Entity\Demo;
+namespace App\Entity\Gallery;
 
 use App\Entity\Base\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class GalleryItem
- * @package App\Entity\Demo
+ * @package App\Entity\Gallery
  * @ORM\Table(name="gallery_item")
  * @ORM\Entity()
  */

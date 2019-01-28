@@ -6,7 +6,7 @@
  * Time: 6:11 PM
  */
 
-namespace App\Entity\Demo;
+namespace App\Entity\Gallery;
 
 use App\Entity\Base\Asset;
 use Doctrine\ORM\Mapping as ORM;
