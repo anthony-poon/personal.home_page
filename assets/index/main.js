@@ -6,6 +6,7 @@ $(document).ready(() => {
         let text = $(this).text().trim();
        $(this).html(text.replace(/(.)/g, "<span class='letter'>$&</span>"))
     });
+    $("#js-hero-page").removeClass("invisible");
     anime.timeline().add({
         targets: '#js-lhs-name .letter',
         scale: [0.3,1],
