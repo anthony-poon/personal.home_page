@@ -10,6 +10,10 @@ Encore
         "./assets/gallery/main.scss",
         "./assets/gallery/main.js"
     ])
+    .addEntry("index/main", [
+        "./assets/index/main.scss",
+        "./assets/index/main.js"
+    ])
     .addEntry('app', "./assets/app.js")
     .enableVersioning()
     .enableSourceMaps(!Encore.isProduction())
