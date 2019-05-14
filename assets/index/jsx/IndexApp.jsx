@@ -58,7 +58,7 @@ export default class IndexApp extends React.Component{
                             <p>I am a <span className={"text-info"}>Sysadmin</span> working in Hong Kong. I also do <span className={"text-info"}>Full Stack Development</span> in work and on the side.</p>
                             <p>For coding I work with PHP, Node.js, React. I am also experienced with Linux, Apache, Nginx and network administration.</p>
                         </div>
-                        <div className={"index-page__sub py-5"} ref={this.registerBreaks.bind(this)} id={"test"}>
+                        <div className={"index-page__sub py-5"} ref={this.registerBreaks.bind(this)} id={"work"}>
                             <h4 className={"mb-4"}>Recent Work</h4>
                             <div className={"py-4"}>
                                 <h5 className={"text-info"}>React Gallery</h5>
@@ -104,7 +104,7 @@ export default class IndexApp extends React.Component{
                                 </div>
                             </div>
                         </div>
-                        <div className={"index-page__sub py-5"} ref={this.registerBreaks.bind(this)} id={"admission"}>
+                        <div className={"index-page__sub py-5"} ref={this.registerBreaks.bind(this)} id={"edu"}>
                             <h4 className={"mb-4"}>My Education</h4>
                             <div className="mb-3">
                                 <div className={"font-weight-bold text-info"}>
@@ -146,8 +146,8 @@ export default class IndexApp extends React.Component{
                     <div className={"index-page__rhs"}>
                         <div className={"index-rhs__top"}>
                             <a href={"/#about"} className={this.state.sessionIndex === 0 ? "text-primary" : ""}>About Me</a>
-                            <a href={"/#test"} className={this.state.sessionIndex === 1 ? "text-primary" : ""}>Recent Work</a>
-                            <a href={"/#admin"} className={this.state.sessionIndex === 2 ? "text-primary" : ""}>My Education</a>
+                            <a href={"/#work"} className={this.state.sessionIndex === 1 ? "text-primary" : ""}>Recent Work</a>
+                            <a href={"/#edu"} className={this.state.sessionIndex === 2 ? "text-primary" : ""}>My Education</a>
                         </div>
                         <div className={"index-rhs__bottom"}>
                             <a href={"https://github.com/anthony-poon"} className={"brand-icon"}>
