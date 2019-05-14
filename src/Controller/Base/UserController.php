@@ -28,10 +28,16 @@ class UserController extends AbstractController {
         $helper->addButton("Edit", "user_edit");
         $helper->addButton("Delete", "user_delete");
         $helper->setHeader([
-            "#",
-            "Username",
-            "Full Name",
-            "Email"
+            [
+                "text" => "#",
+                "priority" => 1
+            ],[
+                "text" => "Username"
+            ],[
+                "text" => "Full Name"
+            ],[
+                "text" => "Email"
+            ]
         ]);
         $helper->setTitle("Users");
         foreach ($users as $u) {

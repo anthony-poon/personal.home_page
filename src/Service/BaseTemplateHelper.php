@@ -25,42 +25,6 @@ class BaseTemplateHelper {
 				$this->role = $this->user->getRoles();
 			}
 		}
-		
-    	$this->navMenu = [
-            [
-                "text" => "Gallery",
-                "url" => $router->generate("gallery_index")
-            ],
-        	[
-        		"text" => "Home",
-				"icon" => "home",
-				"url" => $router->generate("home"),
-			], [
-				"text" => "Administration",
-                "url" => $router->generate("user_list"),
-				"isVisible" => in_array("ROLE_ADMIN", $this->role),
-			], [
-                "text" => "Group Management",
-                "url" => $router->generate("user_group_list"),
-                "isVisible" => in_array("ROLE_ADMIN", $this->role) ,
-            ]
-		];
-
-        $this->sideMenu = [
-            [
-                "text" => "Home",
-                "icon" => "home",
-                "url" => $router->generate("home"),
-            ], [
-                "text" => "User",
-                "url" => $router->generate("user_list"),
-                "isVisible" => in_array("ROLE_ADMIN", $this->role),
-            ], [
-                "text" => "User Group",
-                "url" => $router->generate("user_group_list"),
-                "isVisible" => in_array("ROLE_ADMIN", $this->role) ,
-            ]
-        ];
     }
 
     /**

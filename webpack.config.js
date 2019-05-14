@@ -11,12 +11,15 @@ Encore
         "./assets/gallery/main.js"
     ])
     .addEntry("index/main", [
-        "./assets/index/main.scss",
-        "./assets/index/main.js"
+        "./assets/index/main.js",
+        "./assets/index/main.scss"
     ])
     .addEntry('app', "./assets/app.js")
-    .enableVersioning()
+    .enableVersioning(Encore.isProduction())
     .enableSourceMaps(!Encore.isProduction())
+    .configureBabel(function(babelConfig) {
+        babelConfig.plugins.push("@babel/plugin-proposal-class-properties");
+    })
     .enableSassLoader()
     .autoProvidejQuery()
     .enableReactPreset()

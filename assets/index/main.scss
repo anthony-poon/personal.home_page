@@ -1,0 +1,179 @@
+@import "../custom";
+.index-page__wrapper {
+    position: relative;
+    .index-page__bg-float {
+        color: $secondary;
+        opacity: 0.1;
+        position: fixed;
+        bottom: 20px;
+        z-index: 1;
+        line-height: 1;
+    }
+
+    .index-page__lhs {
+        z-index: 2;
+        .index-page__hero {
+            .hero__name {
+                margin-top: 15vh;
+                margin-bottom: 7vh;
+                //font-weight: normal;
+                //font-family: "Gilroy-Heavy";
+                font-weight: 900;
+            }
+        }
+
+    }
+    .index-page__rhs {
+        z-index: 3;
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        padding-top: 20vh;
+        height: 90vh;
+        .index-rhs__top {
+            text-align: right;
+            float: right;
+            flex-grow: 1;
+            a {
+                color: $secondary;
+                text-decoration: none;
+                display: block;
+                transition: 0.3s;
+            }
+            a:hover {
+                color: $primary;
+            }
+        }
+        .index-rhs__bottom {
+            text-align: right;
+            .brand-icon {
+                @extend .mx-2;
+                background-color: $secondary;
+                height: 50px;
+                width: 50px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                transition: 0.3s;
+            }
+            .brand-icon:hover {
+                background-color: $primary;
+            }
+        }
+    }
+
+}
+
+.index-page__wrapper {
+    .index-page__bg-float {
+        right: 15px;
+        font-size: 3.5rem;
+        font-weight: bold;
+        letter-spacing: 1rem;
+        bottom: 80px;
+    }
+    .hero__statement-1 {
+        font-size: 1.25rem;
+    }
+    .hero__statement-2 {
+        font-size: 1.25rem;
+    }
+    .hero__name {
+        font-size: 2.5rem;
+        line-height: 2.5rem;
+    }
+    .index-page__rhs {
+        .index-rhs__top {
+            font-size: 1.2rem;
+        }
+    }
+}
+
+@include media-breakpoint-up(sm) {
+    .index-page__wrapper {
+        .index-page__bg-float {
+            right: 40px;
+            font-size: 5rem;
+            font-weight: bold;
+            letter-spacing: 1rem;
+
+        }
+        .index-page__rhs {
+            .index-rhs__top {
+                font-size: 1.5rem;
+            }
+        }
+    }
+}
+@include media-breakpoint-up(md) {
+    .index-page__wrapper {
+        .index-page__bg-float {
+            right: 40px;
+            font-size: 6rem;
+            font-weight: bold;
+            letter-spacing: 1rem;
+        }
+        .hero__statement-1 {
+            font-size: 1.5rem;
+        }
+        .hero__statement-2 {
+            font-size: 1.5rem;
+        }
+        .hero__name {
+            font-size: 3rem;
+            line-height: 3rem;
+        }
+        .index-page__rhs {
+            .index-rhs__top {
+                font-size: 1.5rem;
+            }
+        }
+    }
+}
+@include media-breakpoint-up(lg) {
+    .index-page__wrapper {
+        .index-page__bg-float {
+            right: 40px;
+            font-size: 8rem;
+            font-weight: bold;
+            letter-spacing: 1rem;
+        }
+        .hero__statement-1 {
+            font-size: 2.0rem;
+        }
+        .hero__statement-2 {
+            font-size: 2.0rem;
+        }
+        .hero__name {
+            font-size: 4rem;
+            line-height: 4rem;
+        }
+        .index-page__rhs {
+            .index-rhs__top {
+                font-size: 1.7rem;
+            }
+        }
+    }
+}
+@include media-breakpoint-up(xl) {
+    .index-page__wrapper {
+        .index-page__bg-float {
+            right: 40px;
+            font-size: 10rem;
+            font-weight: bold;
+            letter-spacing: 1rem;
+        }
+        .hero__statement-1 {
+            font-size: 2.5rem;
+        }
+        .hero__statement-2 {
+            font-size: 2.5rem;
+        }
+        .hero__name {
+            font-size: 5rem;
+            line-height: 5rem;
+        }
+    }
+}
